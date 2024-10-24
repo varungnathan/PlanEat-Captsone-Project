@@ -1,8 +1,8 @@
 const User = require('../models/User');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const admin = require('../config/firebaseAdmin');
 
-// Register a new user
 const registerUser = async (req, res) => {
   const { name, email, password } = req.body;
 
@@ -23,7 +23,6 @@ const registerUser = async (req, res) => {
   }
 };
 
-// Login user
 const loginUser = async (req, res) => {
   const { email, password } = req.body;
 
@@ -46,7 +45,25 @@ const loginUser = async (req, res) => {
   }
 };
 
+const resetPassword = async (req, res) => {
+  const { email } = req.body;
+
+  try {
+    const userRecord = await admin.auth().getUserByEmail(email);
+    const resetLink = await admin.auth().generatePasswordResetLink(email);
+
+    return res.status(200).json({ resetLink });
+  } catch (error) {
+    if (error.code === 'auth/user-not-found') {
+      return res.status(404).json({ message: 'No account found with this email address.' });
+    } else {
+      return res.status(500).json({ message: 'Error generating password reset link. Please try again.' });
+    }
+  }
+};
+
 module.exports = {
   registerUser,
   loginUser,
+  resetPassword,
 };

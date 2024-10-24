@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faBars, faTimes } from '@fortawesome/free-solid-svg-icons';
+import { faBars } from '@fortawesome/free-solid-svg-icons';
 
 function Navbar({ isAuthenticated, handleLogout }) {
   const [isOpen, setIsOpen] = useState(false);
@@ -11,46 +11,41 @@ function Navbar({ isAuthenticated, handleLogout }) {
   };
 
   return (
-    <nav style={{ backgroundColor: '#f7f7f7', padding: '1rem' }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+    <nav className="navbar navbar-expand-lg navbar-light bg-light">
+      <div className="container-fluid">
+        <Link className="navbar-brand" to="/" style={{ fontSize: '1.5rem', fontWeight: 'bold' }}>
+          PlanEat
+        </Link>
         <button
+          className="navbar-toggler"
+          type="button"
           onClick={toggleMenu}
-          aria-label="Open Menu"
-          style={{
-            display: 'block',
-            background: 'none',
-            border: 'none',
-            fontSize: '1.5rem',
-            cursor: 'pointer',
-          }}
+          aria-controls="navbarNav"
+          aria-expanded={isOpen ? "true" : "false"}
+          aria-label="Toggle navigation"
         >
-          <FontAwesomeIcon icon={isOpen ? faTimes : faBars} />
+          <FontAwesomeIcon icon={faBars} />
         </button>
-
-        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-          <Link to="/" style={{ fontSize: '1.5rem', fontWeight: 'bold', textDecoration: 'none' }}>
-            PlanEat
-          </Link>
-
-          <div
-            style={{
-              display: isOpen ? 'block' : 'none',
-              flexDirection: 'column',
-              gap: '1rem',
-            }}
-          >
-            <Link to="/" style={{ textDecoration: 'none' }}>Home</Link>
+        <div className={`collapse navbar-collapse ${isOpen ? 'show' : ''}`} id="navbarNav">
+          <ul className="navbar-nav ms-auto">
+            <li className="nav-item">
+              <Link className="nav-link" to="/">Home</Link>
+            </li>
             {isAuthenticated ? (
-              <button onClick={handleLogout} style={{ background: 'none', border: 'none', cursor: 'pointer' }}>
-                Logout
-              </button>
+              <li className="nav-item">
+                <button className="nav-link btn btn-link" onClick={handleLogout}>Logout</button>
+              </li>
             ) : (
               <>
-                <Link to="/login" style={{ textDecoration: 'none' }}>Login</Link>
-                <Link to="/signup" style={{ textDecoration: 'none' }}>Signup</Link>
+                <li className="nav-item">
+                  <Link className="nav-link" to="/login">Login</Link>
+                </li>
+                <li className="nav-item">
+                  <Link className="nav-link" to="/signup">Signup</Link>
+                </li>
               </>
             )}
-          </div>
+          </ul>
         </div>
       </div>
     </nav>
