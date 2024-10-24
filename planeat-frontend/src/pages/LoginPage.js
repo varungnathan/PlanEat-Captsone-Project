@@ -7,10 +7,10 @@ function LoginPage() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const navigate = useNavigate();
+  const auth = getAuth();
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    const auth = getAuth();
     try {
       await signInWithEmailAndPassword(auth, email, password);
       navigate('/');
@@ -46,6 +46,11 @@ function LoginPage() {
         <button type="submit" className="btn btn-primary mt-4">Login</button>
         {error && <p className="text-danger mt-3">{error}</p>}
       </form>
+
+      <p className="mt-4">
+        Forgot your password? <Link to="/reset-password">Reset it here</Link>
+      </p>
+
       <p className="mt-4">
         Not a user? <Link to="/signup">Sign up here</Link>
       </p>
