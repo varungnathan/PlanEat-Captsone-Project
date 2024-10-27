@@ -2,7 +2,7 @@ const express = require('express');
 const Recipe = require('../models/Recipe');
 const router = express.Router();
 
-router.get('/', async (req, res) => {
+router.get('/search', async (req, res) => {
     const { search, type, sort } = req.query;
 
     try {
@@ -33,18 +33,6 @@ router.get('/', async (req, res) => {
         res.json(result);
     } catch (error) {
         res.status(500).json({ error: 'Error searching and filtering recipes' });
-    }
-});
-
-router.get('/:id', async (req, res) => {
-    try {
-        const recipe = await Recipe.findById(req.params.id);
-        if (!recipe) {
-            return res.status(404).json({ message: 'Recipe not found' });
-        }
-        res.json(recipe);
-    } catch (error) {
-        res.status(500).json({ error: 'Error fetching recipe details' });
     }
 });
 
