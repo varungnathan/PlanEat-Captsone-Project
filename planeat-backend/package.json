@@ -17,6 +17,6 @@
     "express": "^4.21.1",
     "firebase-admin": "^12.6.0",
     "jsonwebtoken": "^9.0.2",
-    "mongoose": "^8.7.2"
+    "mongoose": "^8.7.3"
   }
 }
