@@ -39,7 +39,7 @@ function Navbar({ isAuthenticated, handleLogout }) {
               </Link>
             </li>
             <li className="nav-item">
-              <Link className="nav-link" to="/recipes/1" style={{ fontSize: '1.25rem', fontWeight: 'bold' }}>
+              <Link className="nav-link" to="/recipes" style={{ fontSize: '1.25rem', fontWeight: 'bold' }}>
                 Recipes
               </Link>
             </li>

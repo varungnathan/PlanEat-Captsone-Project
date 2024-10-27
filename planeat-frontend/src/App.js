@@ -6,8 +6,8 @@ import HomePage from './pages/HomePage';
 import LoginPage from './pages/LoginPage';
 import SignupPage from './pages/SignupPage';
 import ResetPasswordPage from './pages/ResetPasswordPage';
-import RecipeDetailsPage from './pages/RecipeDetailsPage'; // Import RecipeDetailsPage
 import Navbar from './components/Navbar';
+import RecipeListPage from './pages/RecipeListPage'; // Import RecipeListPage
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -42,7 +42,7 @@ function App() {
           <Route path="/login" element={<LoginPage />} />
           <Route path="/signup" element={<SignupPage />} />
           <Route path="/reset-password" element={<ResetPasswordPage />} />
-          <Route path="/recipes/:id" element={<RecipeDetailsPage />} /> {/* Add route for RecipeDetailsPage */}
+          <Route path="/recipes" element={<RecipeListPage />} /> {/* Updated Route */}
         </Routes>
       </div>
     </Router>
