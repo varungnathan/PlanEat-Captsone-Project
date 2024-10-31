@@ -7,9 +7,9 @@ import LoginPage from './pages/LoginPage';
 import SignupPage from './pages/SignupPage';
 import ResetPasswordPage from './pages/ResetPasswordPage';
 import Navbar from './components/Navbar';
+import Footer from './components/Footer';
 import RecipeListPage from './pages/RecipeListPage';
 import RecipeDetailsPage from './pages/RecipeDetailsPage';
-import Footer from './components/Footer';
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -37,18 +37,20 @@ function App() {
 
   return (
     <Router>
-      <Navbar isAuthenticated={isAuthenticated} handleLogout={handleLogout} />
-      <div className="container mt-4">
-        <Routes>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/signup" element={<SignupPage />} />
-          <Route path="/reset-password" element={<ResetPasswordPage />} />
-          <Route path="/recipes" element={<RecipeListPage />} />
-          <Route path="/recipes/:id" element={<RecipeDetailsPage />} />
-        </Routes>
+      <div className="sticky-footer">
+        <Navbar isAuthenticated={isAuthenticated} handleLogout={handleLogout} />
+        <div className="container main-content mt-4">
+          <Routes>
+            <Route path="/" element={<HomePage />} />
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/signup" element={<SignupPage />} />
+            <Route path="/reset-password" element={<ResetPasswordPage />} />
+            <Route path="/recipes" element={<RecipeListPage />} />
+            <Route path="/recipes/:id" element={<RecipeDetailsPage />} />
+          </Routes>
+        </div>
+        <Footer />
       </div>
-      <Footer />
     </Router>
   );
 }

@@ -1,16 +1,19 @@
 .footer {
-    background-color: #f8f9fa;
-    padding: 20px 0;
-    text-align: center;
-    position: fixed;
-    left: 0;
-    bottom: 0;
-    width: 100%;
-  }
-  
-  .footer p {
-    margin: 0;
-    color: #333;
-    font-size: 1rem;
-  }
-  
+  background-color: #f8f9fa;
+  text-align: center;
+  padding: 1rem;
+  position: relative;
+  bottom: 0;
+  width: 100%;
+  border-top: 1px solid #ddd;
+}
+
+.sticky-footer {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.main-content {
+  flex: 1;
+}
