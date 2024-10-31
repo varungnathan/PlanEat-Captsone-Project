@@ -9,8 +9,18 @@ function LoginPage() {
   const navigate = useNavigate();
   const auth = getAuth();
 
+  const validateEmail = (email) => {
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    return emailRegex.test(email);
+  };
+
   const handleLogin = async (e) => {
     e.preventDefault();
+    if (!validateEmail(email)) {
+      setError('Invalid email format');
+      return;
+    }
+
     try {
       await signInWithEmailAndPassword(auth, email, password);
       navigate('/');

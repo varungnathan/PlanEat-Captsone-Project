@@ -9,8 +9,18 @@ function SignupPage() {
   const [error, setError] = useState('');
   const navigate = useNavigate();
 
+  const validateEmail = (email) => {
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    return emailRegex.test(email);
+  };
+
   const handleSignup = async (e) => {
     e.preventDefault();
+    if (!validateEmail(email)) {
+      setError('Invalid email format');
+      return;
+    }
+
     const auth = getAuth();
     try {
       await createUserWithEmailAndPassword(auth, email, password);
