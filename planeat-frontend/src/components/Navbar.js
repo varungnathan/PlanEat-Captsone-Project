@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBars } from '@fortawesome/free-solid-svg-icons';
-import '../App.css'; // Updated path to link App.css
+import '../App.css';
 
 function Navbar({ isAuthenticated, handleLogout }) {
   const [isOpen, setIsOpen] = useState(false);
@@ -54,26 +54,15 @@ function Navbar({ isAuthenticated, handleLogout }) {
                 </button>
               </li>
             ) : (
-              <>
-                <li className="nav-item">
-                  <Link
-                    className="nav-link"
-                    to="/login"
-                    style={{ fontSize: '1.25rem', fontWeight: 'bold' }}
-                  >
-                    Login
-                  </Link>
-                </li>
-                <li className="nav-item">
-                  <Link
-                    className="nav-link"
-                    to="/signup"
-                    style={{ fontSize: '1.25rem', fontWeight: 'bold' }}
-                  >
-                    Signup
-                  </Link>
-                </li>
-              </>
+              <li className="nav-item">
+                <Link
+                  className="nav-link"
+                  to="/login"
+                  style={{ fontSize: '1.25rem', fontWeight: 'bold' }}
+                >
+                  Login
+                </Link>
+              </li>
             )}
           </ul>
         </div>

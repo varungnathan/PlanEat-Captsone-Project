@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom'; // Import Link
 
 function ResetPasswordPage() {
   const [email, setEmail] = useState('');
@@ -52,6 +52,9 @@ function ResetPasswordPage() {
             {error && <p className="text-danger mt-3">{error}</p>}
             {success && <p className="text-success mt-3">Password reset link generated! Redirecting...</p>}
           </form>
+          <div className="mt-3 text-center">
+            <Link to="/login">Back to Login</Link> {/* Added Link */}
+          </div>
         </div>
       </div>
     </div>
