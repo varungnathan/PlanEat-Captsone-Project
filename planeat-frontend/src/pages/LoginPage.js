@@ -60,11 +60,11 @@ function LoginPage() {
           </form>
 
           <p className="text-center mt-4">
-            Forgot your password? <Link to="/reset-password">Reset it here</Link>
+            Forgot your password? <Link to="/reset-password">Reset it</Link>
           </p>
 
           <p className="text-center mt-4">
-            Not a user? <Link to="/signup">Sign up here</Link>
+            Not a user? <Link to="/signup">Sign up</Link>
           </p>
         </div>
       </div>

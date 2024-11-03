@@ -70,7 +70,7 @@ function SignupPage() {
             {error && <p className="text-danger mt-3">{error}</p>}
           </form>
           <p className="text-center mt-4">
-            Already a user? <Link to="/login">Log in here</Link>
+            Already a user? <Link to="/login">Log in</Link>
           </p>
         </div>
       </div>
