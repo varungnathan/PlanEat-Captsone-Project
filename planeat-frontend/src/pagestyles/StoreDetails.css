@@ -1,0 +1,85 @@
+@import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=eco,square_dot');
+
+.product-image {
+  border-radius: 10px;
+  max-height: 400px;
+}
+
+.product-name {
+  font-size: 2rem;
+  font-weight: bold;
+}
+
+.product-price {
+  font-size: 1.5rem;
+  color: #000000;
+  margin-bottom: 1rem;
+}
+
+.product-tags {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 1rem;
+}
+
+.country-tag {
+  background-color: #f8f9fa;
+  border: 1px solid #ddd;
+  padding: 5px 10px;
+  border-radius: 5px;
+  font-size: 0.9rem;
+}
+
+.type-tag {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 10px;
+  border-radius: 5px;
+  font-size: 0.9rem;
+}
+
+.type-tag.veg {
+  background-color: #eaffea;
+  border: 1px solid #75FB4C;
+}
+
+.type-tag.non-veg {
+  background-color: #ffe5e5;
+  border: 1px solid #D32F2F;
+}
+
+.type-icon {
+  font-size: 20px;
+}
+
+.product-description {
+  font-size: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.recommendations {
+  margin-top: 2rem;
+}
+
+.recommendation-card {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.recommendation-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+}
+
+.quantity-selector button {
+    width: 40px;
+    height: 40px;
+    font-size: 1.2rem;
+    font-weight: bold;
+  }
+  
+  .quantity-selector span {
+    font-size: 1.2rem;
+    font-weight: bold;
+  }
+  

@@ -11,7 +11,7 @@ import Footer from './components/Footer';
 import RecipeListPage from './pages/RecipeListPage';
 import RecipeDetailsPage from './pages/RecipeDetailsPage';
 import StorePage from './pages/StorePage';
-import ProductDetailsPage from './pages/ProductDetailsPage'; // Import Product Details Page
+import StoreDetails from './pages/StoreDetails';
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -50,7 +50,7 @@ function App() {
             <Route path="/recipes" element={<RecipeListPage />} />
             <Route path="/recipes/:id" element={<RecipeDetailsPage />} />
             <Route path="/store" element={<StorePage />} />
-            <Route path="/store/:id" element={<ProductDetailsPage />} /> {/* Product Details Page */}
+            <Route path="/store/:id" element={<StoreDetails />} />
           </Routes>
         </div>
         <Footer />
