@@ -1,0 +1,203 @@
+[
+    {
+      "name": "Canned Chicken Curry",
+      "calories": 350,
+      "ingredients": ["Chicken", "Tomato", "Spices", "Preservatives"],
+      "shortDescription": "Ready-to-eat canned chicken curry with rich spices.",
+      "imageUrl": "https://example.com/canned-chicken-curry.jpg",
+      "origin": "India",
+      "type": "Non-Veg",
+      "price": 6.99
+    },
+    {
+      "name": "Dehydrated Vegetable Soup",
+      "calories": 150,
+      "ingredients": ["Carrot", "Potato", "Onion", "Dehydrated Herbs"],
+      "shortDescription": "Just add hot water for a hearty vegetable soup.",
+      "imageUrl": "https://example.com/dehydrated-soup.jpg",
+      "origin": "USA",
+      "type": "Veg",
+      "price": 4.99
+    },
+    {
+      "name": "Canned Tuna in Olive Oil",
+      "calories": 200,
+      "ingredients": ["Tuna", "Olive Oil", "Salt"],
+      "shortDescription": "High-protein tuna preserved in olive oil.",
+      "imageUrl": "https://example.com/canned-tuna.jpg",
+      "origin": "Japan",
+      "type": "Non-Veg",
+      "price": 8.49
+    },
+    {
+      "name": "Instant Ramen Noodles",
+      "calories": 400,
+      "ingredients": ["Noodles", "Spice Packet", "Dehydrated Vegetables"],
+      "shortDescription": "A quick and satisfying bowl of ramen.",
+      "imageUrl": "https://example.com/instant-ramen.jpg",
+      "origin": "Korea",
+      "type": "Veg",
+      "price": 2.99
+    },
+    {
+      "name": "Freeze-Dried Strawberries",
+      "calories": 50,
+      "ingredients": ["Strawberries"],
+      "shortDescription": "Crispy, naturally sweet freeze-dried strawberries.",
+      "imageUrl": "https://example.com/freeze-dried-strawberries.jpg",
+      "origin": "USA",
+      "type": "Veg",
+      "price": 5.49
+    },
+    {
+      "name": "Canned Spaghetti Bolognese",
+      "calories": 400,
+      "ingredients": ["Pasta", "Tomato Sauce", "Ground Beef"],
+      "shortDescription": "Classic spaghetti bolognese in a can.",
+      "imageUrl": "https://example.com/canned-spaghetti.jpg",
+      "origin": "Italy",
+      "type": "Non-Veg",
+      "price": 7.99
+    },
+    {
+      "name": "Vacuum-Sealed Paneer Tikka",
+      "calories": 300,
+      "ingredients": ["Paneer", "Yogurt", "Spices"],
+      "shortDescription": "Pre-marinated paneer tikka, just heat and serve.",
+      "imageUrl": "https://example.com/paneer-tikka.jpg",
+      "origin": "India",
+      "type": "Veg",
+      "price": 6.49
+    },
+    {
+      "name": "Canned Lentil Soup",
+      "calories": 250,
+      "ingredients": ["Lentils", "Tomato", "Spices", "Preservatives"],
+      "shortDescription": "Rich and hearty lentil soup in a can.",
+      "imageUrl": "https://example.com/canned-lentil-soup.jpg",
+      "origin": "Middle East",
+      "type": "Veg",
+      "price": 4.99
+    },
+    {
+      "name": "Jerky (Beef or Chicken)",
+      "calories": 100,
+      "ingredients": ["Beef", "Soy Sauce", "Spices"],
+      "shortDescription": "Dried and seasoned jerky, perfect for snacking.",
+      "imageUrl": "https://example.com/jerky.jpg",
+      "origin": "USA",
+      "type": "Non-Veg",
+      "price": 9.99
+    },
+    {
+      "name": "Dehydrated Mango Slices",
+      "calories": 120,
+      "ingredients": ["Mango", "Sugar"],
+      "shortDescription": "Tangy and sweet dehydrated mango slices.",
+      "imageUrl": "https://example.com/dehydrated-mango.jpg",
+      "origin": "India",
+      "type": "Veg",
+      "price": 5.49
+    },
+    {
+      "name": "Canned Mushroom Risotto",
+      "calories": 320,
+      "ingredients": ["Rice", "Mushrooms", "Cheese"],
+      "shortDescription": "Creamy mushroom risotto ready to eat.",
+      "imageUrl": "https://example.com/canned-risotto.jpg",
+      "origin": "Italy",
+      "type": "Veg",
+      "price": 7.49
+    },
+    {
+      "name": "Instant Couscous",
+      "calories": 220,
+      "ingredients": ["Couscous", "Spice Packet"],
+      "shortDescription": "Instant couscous for a quick meal.",
+      "imageUrl": "https://example.com/instant-couscous.jpg",
+      "origin": "Morocco",
+      "type": "Veg",
+      "price": 3.99
+    },
+    {
+      "name": "Canned Chicken Noodle Soup",
+      "calories": 300,
+      "ingredients": ["Chicken", "Noodles", "Carrots"],
+      "shortDescription": "Comforting chicken noodle soup in a can.",
+      "imageUrl": "https://example.com/chicken-noodle-soup.jpg",
+      "origin": "USA",
+      "type": "Non-Veg",
+      "price": 6.99
+    },
+    {
+      "name": "Freeze-Dried Pasta Primavera",
+      "calories": 350,
+      "ingredients": ["Pasta", "Vegetables", "Cream"],
+      "shortDescription": "Freeze-dried pasta with vegetables, just add water.",
+      "imageUrl": "https://example.com/pasta-primavera.jpg",
+      "origin": "Italy",
+      "type": "Veg",
+      "price": 6.99
+    },
+    {
+      "name": "Canned Sardines in Tomato Sauce",
+      "calories": 250,
+      "ingredients": ["Sardines", "Tomato Sauce", "Salt"],
+      "shortDescription": "Sardines packed in flavorful tomato sauce.",
+      "imageUrl": "https://example.com/canned-sardines.jpg",
+      "origin": "Portugal",
+      "type": "Non-Veg",
+      "price": 4.99
+    },
+    {
+      "name": "Instant Polenta",
+      "calories": 180,
+      "ingredients": ["Cornmeal", "Salt"],
+      "shortDescription": "Just add water for creamy polenta.",
+      "imageUrl": "https://example.com/instant-polenta.jpg",
+      "origin": "Italy",
+      "type": "Veg",
+      "price": 3.99
+    },
+    {
+      "name": "Vacuum-Sealed Falafel Mix",
+      "calories": 300,
+      "ingredients": ["Chickpeas", "Herbs", "Spices"],
+      "shortDescription": "Pre-mixed falafel, ready to fry or bake.",
+      "imageUrl": "https://example.com/falafel-mix.jpg",
+      "origin": "Middle East",
+      "type": "Veg",
+      "price": 4.49
+    },
+    {
+      "name": "Canned Corned Beef",
+      "calories": 400,
+      "ingredients": ["Beef", "Salt", "Spices"],
+      "shortDescription": "Canned corned beef, perfect for quick meals.",
+      "imageUrl": "https://example.com/corned-beef.jpg",
+      "origin": "UK",
+      "type": "Non-Veg",
+      "price": 7.99
+    },
+    {
+      "name": "Dehydrated Instant Coffee",
+      "calories": 5,
+      "ingredients": ["Coffee"],
+      "shortDescription": "Rich instant coffee in seconds.",
+      "imageUrl": "https://example.com/instant-coffee.jpg",
+      "origin": "Colombia",
+      "type": "Veg",
+      "price": 3.49
+    },
+    {
+      "name": "Canned Black Beans",
+      "calories": 120,
+      "ingredients": ["Black Beans", "Salt", "Water"],
+      "shortDescription": "Preserved black beans for Mexican dishes.",
+      "imageUrl": "https://example.com/canned-black-beans.jpg",
+      "origin": "Mexico",
+      "type": "Veg",
+      "price": 3.99
+    }
+  ]
+  

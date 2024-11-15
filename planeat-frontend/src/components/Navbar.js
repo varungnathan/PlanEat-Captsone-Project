@@ -43,6 +43,11 @@ function Navbar({ isAuthenticated, handleLogout }) {
                 Recipes
               </Link>
             </li>
+            <li className="nav-item">
+              <Link className="nav-link" to="/store" style={{ fontSize: '1.25rem', fontWeight: 'bold' }}>
+                Store
+              </Link> {/* Added Store link */}
+            </li>
             {isAuthenticated ? (
               <li className="nav-item">
                 <button
