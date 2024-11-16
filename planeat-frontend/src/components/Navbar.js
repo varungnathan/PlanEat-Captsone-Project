@@ -6,9 +6,14 @@ import '../App.css';
 
 function Navbar({ isAuthenticated, handleLogout }) {
   const [isOpen, setIsOpen] = useState(false);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
 
   const toggleMenu = () => {
     setIsOpen(!isOpen);
+  };
+
+  const toggleDropdown = () => {
+    setDropdownOpen(!dropdownOpen);
   };
 
   return (
@@ -46,29 +51,50 @@ function Navbar({ isAuthenticated, handleLogout }) {
             <li className="nav-item">
               <Link className="nav-link" to="/store" style={{ fontSize: '1.25rem', fontWeight: 'bold' }}>
                 Store
-              </Link> {/* Added Store link */}
+              </Link>
             </li>
-            {isAuthenticated ? (
-              <li className="nav-item">
-                <button
-                  className="nav-link btn btn-link"
-                  onClick={handleLogout}
-                  style={{ fontSize: '1.25rem', fontWeight: 'bold' }}
-                >
-                  Logout
-                </button>
-              </li>
-            ) : (
-              <li className="nav-item">
-                <Link
-                  className="nav-link"
-                  to="/login"
-                  style={{ fontSize: '1.25rem', fontWeight: 'bold' }}
-                >
-                  Login
-                </Link>
-              </li>
-            )}
+            <li className="nav-item dropdown">
+              <span
+                className="nav-link dropdown-toggle d-flex align-items-center"
+                style={{ cursor: 'pointer', fontSize: '1.25rem', fontWeight: 'bold' }}
+                onClick={toggleDropdown}
+              >
+                <span className="material-symbols-outlined">person</span>
+              </span>
+              <ul className={`dropdown-menu ${dropdownOpen ? 'show' : ''}`} style={{ right: 0 }}>
+                {!isAuthenticated ? (
+                  <>
+                    <li>
+                      <Link className="dropdown-item" to="/login">
+                        Login
+                      </Link>
+                    </li>
+                    <li>
+                      <Link className="dropdown-item" to="/signup">
+                        Signup
+                      </Link>
+                    </li>
+                  </>
+                ) : (
+                  <>
+                    <li>
+                      <Link className="dropdown-item" to="/account">
+                        Account Management
+                      </Link>
+                    </li>
+                    <li>
+                      <button
+                        className="dropdown-item"
+                        onClick={handleLogout}
+                        style={{ border: 'none', background: 'none', padding: 0 }}
+                      >
+                        Logout
+                      </button>
+                    </li>
+                  </>
+                )}
+              </ul>
+            </li>
           </ul>
         </div>
       </div>
