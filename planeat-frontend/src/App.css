@@ -44,3 +44,19 @@
     transform: rotate(360deg);
   }
 }
+
+.dropdown-menu {
+  padding: 10px;
+  text-align: left;
+}
+
+.dropdown-item {
+  font-size: 1rem;
+  padding: 8px 15px;
+  color: #333;
+}
+
+.dropdown-item:hover {
+  background-color: #f8f9fa;
+  color: #000;
+}

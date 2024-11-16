@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBars } from '@fortawesome/free-solid-svg-icons';
 import '../App.css';
@@ -7,6 +7,7 @@ import '../App.css';
 function Navbar({ isAuthenticated, handleLogout }) {
   const [isOpen, setIsOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const navigate = useNavigate();
 
   const toggleMenu = () => {
     setIsOpen(!isOpen);
@@ -14,6 +15,11 @@ function Navbar({ isAuthenticated, handleLogout }) {
 
   const toggleDropdown = () => {
     setDropdownOpen(!dropdownOpen);
+  };
+
+  const handleLogoutAndRedirect = () => {
+    handleLogout();
+    navigate('/');
   };
 
   return (
@@ -39,29 +45,46 @@ function Navbar({ isAuthenticated, handleLogout }) {
         <div className={`collapse navbar-collapse ${isOpen ? 'show' : ''}`} id="navbarNav">
           <ul className="navbar-nav ms-auto">
             <li className="nav-item">
-              <Link className="nav-link" to="/" style={{ fontSize: '1.25rem', fontWeight: 'bold' }}>
+              <Link className="nav-link nav-text" to="/">
                 Home
               </Link>
             </li>
             <li className="nav-item">
-              <Link className="nav-link" to="/recipes" style={{ fontSize: '1.25rem', fontWeight: 'bold' }}>
+              <Link className="nav-link nav-text" to="/recipes">
                 Recipes
               </Link>
             </li>
             <li className="nav-item">
-              <Link className="nav-link" to="/store" style={{ fontSize: '1.25rem', fontWeight: 'bold' }}>
+              <Link className="nav-link nav-text" to="/store">
                 Store
               </Link>
             </li>
             <li className="nav-item dropdown">
               <span
                 className="nav-link dropdown-toggle d-flex align-items-center"
-                style={{ cursor: 'pointer', fontSize: '1.25rem', fontWeight: 'bold' }}
+                style={{ cursor: 'pointer' }}
                 onClick={toggleDropdown}
               >
-                <span className="material-symbols-outlined">person</span>
+                <img
+                  src="https://firebasestorage.googleapis.com/v0/b/planeatscapstone.appspot.com/o/account_circle_24dp_000000_FILL0_wght400_GRAD0_opsz24.svg?alt=media&token=8c321473-a6f7-4f99-83bc-f46473162123"
+                  alt="Account Icon"
+                  style={{
+                    width: '24px',
+                    height: '24px',
+                    marginRight: '8px',
+                  }}
+                />
               </span>
-              <ul className={`dropdown-menu ${dropdownOpen ? 'show' : ''}`} style={{ right: 0 }}>
+              <ul
+                className={`dropdown-menu ${dropdownOpen ? 'show' : ''}`}
+                style={{
+                  right: 0,
+                  padding: '10px',
+                  minWidth: '150px',
+                  textAlign: 'left',
+                  boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+                }}
+              >
                 {!isAuthenticated ? (
                   <>
                     <li>
@@ -85,8 +108,14 @@ function Navbar({ isAuthenticated, handleLogout }) {
                     <li>
                       <button
                         className="dropdown-item"
-                        onClick={handleLogout}
-                        style={{ border: 'none', background: 'none', padding: 0 }}
+                        onClick={handleLogoutAndRedirect}
+                        style={{
+                          border: 'none',
+                          background: 'none',
+                          padding: '8px 15px',
+                          textAlign: 'left',
+                          width: '100%',
+                        }}
                       >
                         Logout
                       </button>
