@@ -14,6 +14,12 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  phone: {
+    type: String,
+  },
+  address: {
+    type: String,
+  },
   role: {
     type: String,
     enum: ['Free', 'Silver', 'Gold', 'Platinum'],

@@ -1,0 +1,18 @@
+.account-management-page {
+    max-width: 600px;
+    margin: 0 auto;
+  }
+  
+  .details-section {
+    margin-top: 20px;
+  }
+  
+  .details-section .form-group {
+    margin-bottom: 15px;
+  }
+  
+  .btn {
+    font-size: 16px;
+    font-weight: bold;
+  }
+  
