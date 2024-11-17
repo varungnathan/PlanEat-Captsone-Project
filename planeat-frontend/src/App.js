@@ -12,7 +12,7 @@ import RecipeListPage from './pages/RecipeListPage';
 import RecipeDetailsPage from './pages/RecipeDetailsPage';
 import StorePage from './pages/StorePage';
 import StoreDetails from './pages/StoreDetails';
-import AccountManagementPage from './pages/AccountManagementPage';
+import AccountManagement from './pages/AccountManagement';
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -52,7 +52,7 @@ function App() {
             <Route path="/recipes/:id" element={<RecipeDetailsPage />} />
             <Route path="/store" element={<StorePage />} />
             <Route path="/store/:id" element={<StoreDetails />} />
-            <Route path="/account" element={<AccountManagementPage />} />
+            <Route path="/account" element={<AccountManagement />} /> {/* Updated route */}
           </Routes>
         </div>
         <Footer />

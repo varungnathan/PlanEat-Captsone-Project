@@ -10,9 +10,10 @@ const userSchema = new mongoose.Schema({
     required: true,
     unique: true,
   },
-  password: {
+  firebaseUid: {
     type: String,
     required: true,
+    unique: true,
   },
   phone: {
     type: String,
@@ -24,6 +25,10 @@ const userSchema = new mongoose.Schema({
     type: String,
     enum: ['Free', 'Silver', 'Gold', 'Platinum'],
     default: 'Free',
+  },
+  profileImageUrl: {
+    type: String, // URL to the image in Firebase storage
+    default: '',  // Default to empty if not set
   },
 }, {
   timestamps: true,

@@ -1,17 +1,29 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
 import { useNavigate, Link } from 'react-router-dom';
+import axios from 'axios';
 
 function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [userDetails, setUserDetails] = useState(null); // For storing user details
   const navigate = useNavigate();
   const auth = getAuth();
 
   const validateEmail = (email) => {
     const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
     return emailRegex.test(email);
+  };
+
+  const fetchUserDetails = async (email) => {
+    try {
+      const response = await axios.get(`http://localhost:5000/api/users/details/${email}`);
+      setUserDetails(response.data);
+      console.log('Fetched User Details:', response.data);
+    } catch (error) {
+      console.error('Error fetching user details:', error);
+    }
   };
 
   const handleLogin = async (e) => {
@@ -23,11 +35,19 @@ function LoginPage() {
 
     try {
       await signInWithEmailAndPassword(auth, email, password);
-      navigate('/');
+      await fetchUserDetails(email); // Fetch additional user details
+      navigate('/'); // Redirect to homepage
     } catch (error) {
       setError(error.message);
     }
   };
+
+  useEffect(() => {
+    if (userDetails) {
+      console.log('User Details loaded in state:', userDetails);
+      // Perform any post-login actions with user details, if needed
+    }
+  }, [userDetails]);
 
   return (
     <div className="container mt-5">

@@ -1,11 +1,14 @@
 import React, { useState } from 'react';
 import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth';
 import { useNavigate, Link } from 'react-router-dom';
+import axios from 'axios';
 
 function SignupPage() {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [phone, setPhone] = useState('');
+  const [address, setAddress] = useState('');
   const [error, setError] = useState('');
   const navigate = useNavigate();
 
@@ -23,7 +26,17 @@ function SignupPage() {
 
     const auth = getAuth();
     try {
-      await createUserWithEmailAndPassword(auth, email, password);
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      const firebaseUid = userCredential.user.uid;
+
+      await axios.post('http://localhost:5000/api/users/details', {
+        name,
+        email,
+        firebaseUid,
+        phone,
+        address,
+      });
+
       navigate('/login');
     } catch (error) {
       setError(error.message);
@@ -64,6 +77,24 @@ function SignupPage() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
+              />
+            </div>
+            <div className="form-group mt-3">
+              <label>Phone</label>
+              <input
+                type="text"
+                className="form-control"
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
+              />
+            </div>
+            <div className="form-group mt-3">
+              <label>Address</label>
+              <input
+                type="text"
+                className="form-control"
+                value={address}
+                onChange={(e) => setAddress(e.target.value)}
               />
             </div>
             <button type="submit" className="btn btn-primary w-100 mt-4">Signup</button>
