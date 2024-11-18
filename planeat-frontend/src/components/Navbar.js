@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faBars } from '@fortawesome/free-solid-svg-icons';
+import { faBars, faShoppingCart } from '@fortawesome/free-solid-svg-icons';
 import '../App.css';
 
 function Navbar({ isAuthenticated, handleLogout }) {
@@ -37,7 +37,7 @@ function Navbar({ isAuthenticated, handleLogout }) {
           type="button"
           onClick={toggleMenu}
           aria-controls="navbarNav"
-          aria-expanded={isOpen ? "true" : "false"}
+          aria-expanded={isOpen ? 'true' : 'false'}
           aria-label="Toggle navigation"
         >
           <FontAwesomeIcon icon={faBars} />
@@ -57,6 +57,12 @@ function Navbar({ isAuthenticated, handleLogout }) {
             <li className="nav-item">
               <Link className="nav-link nav-text" to="/store">
                 Store
+              </Link>
+            </li>
+            <li className="nav-item">
+              <Link className="nav-link nav-text d-flex align-items-center" to="/cart">
+                <FontAwesomeIcon icon={faShoppingCart} style={{ marginRight: '8px' }} />
+                Cart
               </Link>
             </li>
             <li className="nav-item dropdown">
@@ -101,9 +107,9 @@ function Navbar({ isAuthenticated, handleLogout }) {
                 ) : (
                   <>
                     <li>
-                    <Link className="dropdown-item" to="/account">
-  Account Management
-</Link>
+                      <Link className="dropdown-item" to="/account">
+                        Account Management
+                      </Link>
                     </li>
                     <li>
                       <button
