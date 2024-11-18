@@ -23,7 +23,6 @@ function Cart() {
     try {
       const response = await axios.get(`http://localhost:5000/api/cart/${user.uid}`);
       const items = response.data.items || [];
-      console.log('Fetched cart items:', items); // Debugging
       setCartItems(items);
       calculateTotals(items);
     } catch (error) {
@@ -38,7 +37,6 @@ function Cart() {
 
   const calculateTotals = (items) => {
     if (!items || items.length === 0) {
-      console.log('No items in cart to calculate totals.');
       setTotalPrice(0);
       setHst(0);
       setGrandTotal(0);
@@ -46,16 +44,7 @@ function Cart() {
     }
 
     const total = items.reduce((acc, item) => {
-      if (!item.productId) {
-        console.error('Item missing productId:', item);
-        return acc;
-      }
-
-      const price = item.productId.price || 0;
-      if (price === 0) {
-        console.warn('Item price is missing or zero:', item.productId);
-      }
-
+      const price = item.productId?.price || 0;
       return acc + price * item.quantity;
     }, 0);
 
@@ -63,8 +52,6 @@ function Cart() {
     setTotalPrice(total);
     setHst(hstAmount);
     setGrandTotal(total + hstAmount);
-
-    console.log('Totals calculated: Subtotal:', total, 'HST:', hstAmount, 'Grand Total:', total + hstAmount);
   };
 
   const handleQuantityChange = async (productId, delta) => {
@@ -99,6 +86,10 @@ function Cart() {
 
   const handleEditItem = (productId) => {
     navigate(`/store/${productId}`);
+  };
+
+  const handleProceedToCheckout = () => {
+    navigate('/checkout');
   };
 
   if (!user) {
@@ -174,7 +165,7 @@ function Cart() {
             <button className="btn btn-secondary mt-3 me-3" onClick={() => navigate('/store')}>
               Continue Shopping
             </button>
-            <button className="btn btn-primary mt-3" onClick={() => navigate('/checkout')}>
+            <button className="btn btn-primary mt-3" onClick={handleProceedToCheckout}>
               Proceed to Checkout
             </button>
           </div>

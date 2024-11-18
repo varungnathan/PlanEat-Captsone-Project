@@ -5,6 +5,11 @@ const cartSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  userId: {
+    type: mongoose.Schema.Types.ObjectId, // Foreign key reference to User collection
+    ref: 'User', // Name of the User model
+    required: true,
+  },
   items: [
     {
       productId: {
