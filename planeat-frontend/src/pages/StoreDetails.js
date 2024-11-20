@@ -14,6 +14,8 @@ function StoreDetails() {
   const [recommendations, setRecommendations] = useState([]);
   const [quantity, setQuantity] = useState(1);
   const [loginModal, setLoginModal] = useState(false);
+  const [postalCode, setPostalCode] = useState('');
+  const [shippingMessage, setShippingMessage] = useState('');
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -32,9 +34,7 @@ function StoreDetails() {
     fetchProduct();
   }, [id]);
 
-  if (!product) return <div>Loading...</div>;
-
-  const isVeg = product.type === 'Veg';
+  const isVeg = product?.type === 'Veg';
 
   const handleAddToCart = async () => {
     if (!user) {
@@ -59,6 +59,17 @@ function StoreDetails() {
     navigate('/login');
   };
 
+  const handleCheckShipping = () => {
+    const regex = /^[A-Za-z]\d[A-Za-z]\d[A-Za-z]\d$/;
+    if (regex.test(postalCode)) {
+      setShippingMessage('Shipping is available and will arrive within 2 days.');
+    } else {
+      setShippingMessage('Invalid postal code format. Please use A1A1A1 format.');
+    }
+  };
+
+  if (!product) return <div>Loading...</div>;
+
   return (
     <div className="container mt-5">
       <div className="row">
@@ -68,6 +79,28 @@ function StoreDetails() {
             alt={product.name}
             className="img-fluid product-image"
           />
+          {/* Nutritional Information Section */}
+          {product.nutritionalInfo && (
+            <div className="nutritional-info mt-4">
+              <h3>Nutritional Information</h3>
+              <table className="table nutritional-table">
+                <thead>
+                  <tr>
+                    <th>Component</th>
+                    <th>Amount</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {Object.entries(product.nutritionalInfo).map(([key, value]) => (
+                    <tr key={key}>
+                      <td>{key.replace(/([A-Z])/g, ' $1').trim()}</td>
+                      <td>{value}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
         </div>
         <div className="col-md-6">
           <h1 className="product-name">{product.name}</h1>
@@ -86,8 +119,8 @@ function StoreDetails() {
               {isVeg ? 'Veg' : 'Non-Veg'}
             </span>
           </div>
-          <p className="product-description">{product.longDescription || product.shortDescription}</p>
-          <div className="quantity-selector d-flex align-items-center mb-3">
+
+          <div className="quantity-selector d-flex align-items-center mb-3 mt-4">
             <button
               className="btn btn-secondary"
               onClick={() => setQuantity((prev) => Math.max(prev - 1, 1))}
@@ -103,9 +136,59 @@ function StoreDetails() {
               +
             </button>
           </div>
-          <button className="btn btn-success" onClick={handleAddToCart}>
+          <button className="btn btn-success mb-4" onClick={handleAddToCart}>
             Add to Cart
           </button>
+
+          <div className="product-details mt-4">
+            <h3>About the Product</h3>
+            <p>{product.longDescription || product.shortDescription}</p>
+
+            {product.history && (
+              <div className="mt-4">
+                <h4>History</h4>
+                <p>{product.history}</p>
+              </div>
+            )}
+
+            {product.purchaseInfo && (
+              <div className="mt-4">
+                <h4>Purchase Information</h4>
+                <p>{product.purchaseInfo}</p>
+                <div className="mt-3">
+                  <label htmlFor="postalCode">Check Shipping Availability</label>
+                  <div className="d-flex">
+                    <input
+                      type="text"
+                      className="form-control me-2"
+                      id="postalCode"
+                      placeholder="Enter postal code (e.g., A1A1A1)"
+                      value={postalCode}
+                      onChange={(e) => setPostalCode(e.target.value)}
+                    />
+                    <button className="btn btn-primary" onClick={handleCheckShipping}>
+                      Check
+                    </button>
+                  </div>
+                  {shippingMessage && <p className="mt-2">{shippingMessage}</p>}
+                </div>
+              </div>
+            )}
+
+            {product.giftOptions && (
+              <div className="mt-4">
+                <h4>Gift Options</h4>
+                <p>{product.giftOptions}</p>
+              </div>
+            )}
+
+            {product.technicalDetails && (
+              <div className="mt-4">
+                <h4>Technical Details</h4>
+                <p>{product.technicalDetails}</p>
+              </div>
+            )}
+          </div>
         </div>
       </div>
 

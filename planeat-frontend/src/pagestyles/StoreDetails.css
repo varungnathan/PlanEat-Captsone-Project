@@ -82,4 +82,25 @@
     font-size: 1.2rem;
     font-weight: bold;
   }
+
+  .nutritional-table {
+    border: 1px solid #ccc;
+    border-radius: 15px;
+    padding: 15px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+  }
   
+  .nutritional-table th {
+    border-bottom: 1px solid #ccc;
+    text-align: left;
+    padding: 8px;
+  }
+  
+  .nutritional-table td {
+    padding: 8px;
+  }
+  .nutritional-table td:first-child {
+    text-transform: capitalize;
+  }
+    
