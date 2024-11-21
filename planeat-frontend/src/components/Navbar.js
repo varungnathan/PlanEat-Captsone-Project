@@ -59,6 +59,13 @@ function Navbar({ isAuthenticated, handleLogout }) {
                 Store
               </Link>
             </li>
+            {isAuthenticated && (
+              <li className="nav-item">
+                <Link className="nav-link nav-text" to="/meal-planner">
+                  Meal Planner
+                </Link>
+              </li>
+            )}
             <li className="nav-item">
               <Link className="nav-link nav-text d-flex align-items-center" to="/cart">
                 <FontAwesomeIcon icon={faShoppingCart} style={{ marginRight: '8px' }} />

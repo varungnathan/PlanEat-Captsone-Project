@@ -14,7 +14,8 @@ import StorePage from './pages/StorePage';
 import StoreDetails from './pages/StoreDetails';
 import AccountManagement from './pages/AccountManagement';
 import Cart from './pages/Cart';
-import CheckoutPage from './pages/CheckoutPage'; // Import the Checkout page
+import CheckoutPage from './pages/CheckoutPage';
+import MealPlannerPage from './pages/MealPlannerPage';
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -56,7 +57,8 @@ function App() {
             <Route path="/store/:id" element={<StoreDetails />} />
             <Route path="/account" element={<AccountManagement />} />
             <Route path="/cart" element={<Cart />} />
-            <Route path="/checkout" element={<CheckoutPage />} /> {/* Added Checkout route */}
+            <Route path="/checkout" element={<CheckoutPage />} />
+            <Route path="/meal-planner" element={<MealPlannerPage />} />
           </Routes>
         </div>
         <Footer />

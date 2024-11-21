@@ -15,6 +15,19 @@ router.get('/details/:firebaseUid', async (req, res) => {
   }
 });
 
+// Fetch MongoDB _id by firebaseUid
+router.get('/firebase/:firebaseUid', async (req, res) => {
+  try {
+    const user = await User.findOne({ firebaseUid: req.params.firebaseUid });
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+    res.json({ _id: user._id }); // Return MongoDB ID
+  } catch (error) {
+    res.status(500).json({ message: 'Error fetching user ID' });
+  }
+});
+
 // Update user details (including profile image URL)
 router.put('/details/:firebaseUid', async (req, res) => {
   const { phone, address, profileImageUrl } = req.body;
