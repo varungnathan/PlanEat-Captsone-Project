@@ -19,10 +19,8 @@ function MealPlannerPage() {
     if (user) {
       try {
         const response = await axios.get(`http://localhost:5000/api/users/firebase/${user.uid}`);
-        setUserId(response.data._id); // Set MongoDB user ID
-        console.log('MongoDB User ID:', response.data._id);
+        setUserId(response.data._id);
       } catch (error) {
-        console.error('Error fetching MongoDB user ID:', error);
         setErrorMessage('Failed to load user ID.');
       }
     }
@@ -31,9 +29,12 @@ function MealPlannerPage() {
   const fetchMealPlans = useCallback(async () => {
     try {
       const response = await axios.get(`http://localhost:5000/api/meal-plans/${userId}`);
-      setMealPlans(response.data);
+      const plansWithAdjustedDates = response.data.map((plan) => ({
+        ...plan,
+        date: new Date(plan.date).toISOString().split('T')[0], // Convert to local ISO format (YYYY-MM-DD)
+      }));
+      setMealPlans(plansWithAdjustedDates);
     } catch (error) {
-      console.error('Error fetching meal plans:', error);
       setErrorMessage('Failed to load meal plans.');
     }
   }, [userId]);
@@ -68,15 +69,14 @@ function MealPlannerPage() {
 
     try {
       await axios.post('http://localhost:5000/api/meal-plans', {
-        userId, // Use MongoDB ID
-        date: selectedDate,
+        userId,
+        date: new Date(selectedDate).toISOString(), // Ensure the date is saved in UTC
         meals: [{ time: selectedMeal, recipe: selectedRecipe }],
       });
 
       setSuccessMessage('Meal plan added successfully!');
       fetchMealPlans();
     } catch (error) {
-      console.error('Error adding meal plan:', error);
       setErrorMessage('Failed to add meal plan.');
     }
   };
@@ -87,7 +87,6 @@ function MealPlannerPage() {
       setSuccessMessage('Meal plan deleted successfully!');
       fetchMealPlans();
     } catch (error) {
-      console.error('Error deleting meal plan:', error);
       setErrorMessage('Failed to delete meal plan.');
     }
   };
@@ -156,7 +155,7 @@ function MealPlannerPage() {
             {mealPlans.map((plan) =>
               plan.meals.map((meal, index) => (
                 <tr key={`${plan._id}-${index}`}>
-                  <td>{new Date(plan.date).toLocaleDateString()}</td>
+                  <td>{plan.date}</td>
                   <td>{meal.time}</td>
                   <td>{meal.recipe.title}</td>
                   <td>
