@@ -11,6 +11,7 @@ function RecipeDetailsPage() {
   const user = auth.currentUser;
   const [recipe, setRecipe] = useState(null);
   const [error, setError] = useState('');
+  const [isFavorite, setIsFavorite] = useState(false);
   const [isShareModalOpen, setIsShareModalOpen] = useState(false);
   const [copied, setCopied] = useState(false);
  
@@ -21,13 +22,23 @@ function RecipeDetailsPage() {
       try {
         const response = await axios.get(`http://localhost:5000/api/recipes/${id}`);
         setRecipe(response.data);
+ 
+        if (user) {
+          const favoritesResponse = await axios.get(
+            `http://localhost:5000/api/users/favorites/${user.uid}`
+          );
+          const isFavorited = favoritesResponse.data.favorites.some(
+            (favorite) => favorite._id === id
+          );
+          setIsFavorite(isFavorited);
+        }
       } catch (error) {
         setError('Recipe not found.');
       }
     };
  
     fetchRecipe();
-  }, [id]);
+  }, [id, user]);
  
   const handleSaveRecipe = async () => {
     if (!user) {
@@ -37,11 +48,32 @@ function RecipeDetailsPage() {
  
     try {
       await axios.post(`http://localhost:5000/api/users/save-recipe/${user.uid}`, {
-        recipeId: recipe._id,
+        recipeId: id,
       });
       alert('Recipe saved successfully!');
     } catch (error) {
       alert('Failed to save the recipe.');
+    }
+  };
+ 
+  const handleFavoriteToggle = async () => {
+    if (!user) {
+      alert('Please log in to manage favorites.');
+      return;
+    }
+ 
+    try {
+      if (isFavorite) {
+        await axios.delete(`http://localhost:5000/api/users/favorites/${user.uid}/${id}`);
+        setIsFavorite(false);
+      } else {
+        await axios.post(`http://localhost:5000/api/users/favorites/${user.uid}`, {
+          recipeId: id,
+        });
+        setIsFavorite(true);
+      }
+    } catch (error) {
+      alert('Failed to update favorites.');
     }
   };
  
@@ -76,16 +108,29 @@ function RecipeDetailsPage() {
       <h3>Instructions</h3>
       <p>{recipe.instructions}</p>
  
-      <button className="btn btn-secondary mt-3" onClick={handleSaveRecipe}>
-        Save Recipe
-      </button>
+      <div className="mt-3">
+        <button
+          className={`btn ${isFavorite ? 'btn-danger' : 'btn-secondary'}`}
+          onClick={handleFavoriteToggle}
+        >
+          {isFavorite ? 'Remove from Favorites' : 'Add to Favorites'}
+        </button>
  
-      {/* Share Button */}
-      <button className="btn btn-secondary mt-3 ms-3" onClick={handleShareModal}>
-        {isShareModalOpen ? 'Close Sharing Options' : 'Share Recipe'}
-      </button>
+        <button
+          className="btn btn-primary ms-3"
+          onClick={handleSaveRecipe}
+        >
+          Save Recipe
+        </button>
  
-      {/* Share Modal */}
+        <button
+          className="btn btn-secondary ms-3"
+          onClick={handleShareModal}
+        >
+          {isShareModalOpen ? 'Close Sharing Options' : 'Share Recipe'}
+        </button>
+      </div>
+ 
       {isShareModalOpen && (
         <div className="share-modal mt-4">
           <h4>Share This Recipe</h4>
@@ -127,4 +172,3 @@ function RecipeDetailsPage() {
 }
  
 export default RecipeDetailsPage;
- 

@@ -97,4 +97,60 @@ router.get('/saved-recipes/:firebaseUid', async (req, res) => {
   }
 });
  
+router.post('/favorites/:firebaseUid', async (req, res) => {
+  const { firebaseUid } = req.params;
+  const { recipeId } = req.body;
+ 
+  try {
+    const user = await User.findOne({ firebaseUid });
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+ 
+    if (user.favorites.includes(recipeId)) {
+      return res.status(400).json({ message: 'Recipe already in favorites.' });
+    }
+ 
+    user.favorites.push(recipeId);
+    await user.save();
+ 
+    res.status(200).json({ message: 'Recipe added to favorites!', favorites: user.favorites });
+  } catch (error) {
+    res.status(500).json({ message: 'Error adding to favorites', error });
+  }
+});
+ 
+router.get('/favorites/:firebaseUid', async (req, res) => {
+  const { firebaseUid } = req.params;
+ 
+  try {
+    const user = await User.findOne({ firebaseUid }).populate('favorites');
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+ 
+    res.status(200).json({ favorites: user.favorites });
+  } catch (error) {
+    res.status(500).json({ message: 'Error fetching favorites', error });
+  }
+});
+ 
+router.delete('/favorites/:firebaseUid/:recipeId', async (req, res) => {
+  const { firebaseUid, recipeId } = req.params;
+ 
+  try {
+    const user = await User.findOne({ firebaseUid });
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+ 
+    user.favorites = user.favorites.filter((id) => id.toString() !== recipeId);
+    await user.save();
+ 
+    res.status(200).json({ message: 'Recipe removed from favorites.', favorites: user.favorites });
+  } catch (error) {
+    res.status(500).json({ message: 'Error removing from favorites', error });
+  }
+});
+ 
 module.exports = router;

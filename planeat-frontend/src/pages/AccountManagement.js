@@ -21,7 +21,9 @@ function AccountManagement() {
   const [successMessage, setSuccessMessage] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
   const [savedRecipes, setSavedRecipes] = useState([]);
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [favoriteRecipes, setFavoriteRecipes] = useState([]);
+  const [isSavedDropdownOpen, setIsSavedDropdownOpen] = useState(false);
+  const [isFavoritesDropdownOpen, setIsFavoritesDropdownOpen] = useState(false);
  
   useEffect(() => {
     const fetchUserDetails = async () => {
@@ -57,8 +59,22 @@ function AccountManagement() {
       }
     };
  
+    const fetchFavoriteRecipes = async () => {
+      if (!user) {
+        return;
+      }
+ 
+      try {
+        const response = await axios.get(`http://localhost:5000/api/users/favorites/${user.uid}`);
+        setFavoriteRecipes(response.data.favorites);
+      } catch (error) {
+        setErrorMessage('Failed to load favorite recipes.');
+      }
+    };
+ 
     fetchUserDetails();
     fetchSavedRecipes();
+    fetchFavoriteRecipes();
   }, [user]);
  
   const handleInputChange = (e) => {
@@ -127,8 +143,12 @@ function AccountManagement() {
     }
   };
  
-  const toggleDropdown = () => {
-    setIsDropdownOpen((prev) => !prev);
+  const toggleSavedDropdown = () => {
+    setIsSavedDropdownOpen((prev) => !prev);
+  };
+ 
+  const toggleFavoritesDropdown = () => {
+    setIsFavoritesDropdownOpen((prev) => !prev);
   };
  
   return (
@@ -234,12 +254,12 @@ function AccountManagement() {
         <h3>
           <button
             className="btn btn-primary w-100"
-            onClick={toggleDropdown}
+            onClick={toggleSavedDropdown}
           >
-            {isDropdownOpen ? 'Hide Saved Recipes' : 'View Saved Recipes'}
+            {isSavedDropdownOpen ? 'Hide Saved Recipes' : 'View Saved Recipes'}
           </button>
         </h3>
-        {isDropdownOpen && (
+        {isSavedDropdownOpen && (
           <div className="mt-3">
             {savedRecipes.length === 0 ? (
               <p>No saved recipes yet.</p>
@@ -259,9 +279,37 @@ function AccountManagement() {
           </div>
         )}
       </div>
+      <div className="mt-5">
+        <h3>
+          <button
+            className="btn btn-success w-100"
+            onClick={toggleFavoritesDropdown}
+          >
+            {isFavoritesDropdownOpen ? 'Hide Favorite Recipes' : 'View Favorite Recipes'}
+          </button>
+        </h3>
+        {isFavoritesDropdownOpen && (
+          <div className="mt-3">
+            {favoriteRecipes.length === 0 ? (
+              <p>No favorite recipes yet.</p>
+            ) : (
+              <div>
+                {favoriteRecipes.map((recipe) => (
+                  <div key={recipe._id} className="mb-3">
+                    <h5>{recipe.title}</h5>
+                    <p>{recipe.description}</p>
+                    <Link to={`/recipes/${recipe._id}`} className="btn btn-success btn-sm">
+                      View Recipe
+                    </Link>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+      </div>
     </div>
   );
 }
  
 export default AccountManagement;
- 
