@@ -10,10 +10,14 @@ function RecipeDetailsPage() {
   const auth = getAuth();
   const user = auth.currentUser;
   const [recipe, setRecipe] = useState(null);
+  const [reviews, setReviews] = useState([]);
+  const [averageRating, setAverageRating] = useState(0);
+  const [userReview, setUserReview] = useState({ rating: 0, comment: '' });
   const [error, setError] = useState('');
   const [isFavorite, setIsFavorite] = useState(false);
   const [isShareModalOpen, setIsShareModalOpen] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [showCommentBox, setShowCommentBox] = useState(false);
  
   const recipeLink = `http://localhost:3000/recipes/${id}`;
  
@@ -22,6 +26,8 @@ function RecipeDetailsPage() {
       try {
         const response = await axios.get(`http://localhost:5000/api/recipes/${id}`);
         setRecipe(response.data);
+        setReviews(response.data.reviews);
+        setAverageRating(response.data.averageRating);
  
         if (user) {
           const favoritesResponse = await axios.get(
@@ -40,19 +46,24 @@ function RecipeDetailsPage() {
     fetchRecipe();
   }, [id, user]);
  
-  const handleSaveRecipe = async () => {
+  const handleReviewSubmit = async () => {
     if (!user) {
-      alert('Please log in to save recipes.');
+      alert('Please log in to submit a review.');
       return;
     }
  
     try {
-      await axios.post(`http://localhost:5000/api/users/save-recipe/${user.uid}`, {
-        recipeId: id,
-      });
-      alert('Recipe saved successfully!');
+      const reviewData = {
+        userId: user.uid,
+        rating: userReview.rating,
+        comment: userReview.comment,
+      };
+      const response = await axios.post(`http://localhost:5000/api/recipes/${id}/reviews`, reviewData);
+      setReviews(response.data.reviews);
+      setUserReview({ rating: 0, comment: '' });
+      setShowCommentBox(false);
     } catch (error) {
-      alert('Failed to save the recipe.');
+      alert('Failed to submit review.');
     }
   };
  
@@ -75,6 +86,11 @@ function RecipeDetailsPage() {
     } catch (error) {
       alert('Failed to update favorites.');
     }
+  };
+ 
+  const handleRatingClick = (ratingValue) => {
+    setUserReview((prev) => ({ ...prev, rating: ratingValue }));
+    setShowCommentBox(true);
   };
  
   const handleShareModal = () => {
@@ -107,7 +123,50 @@ function RecipeDetailsPage() {
       </ul>
       <h3>Instructions</h3>
       <p>{recipe.instructions}</p>
- 
+      <h3 className="mt-5">Average Rating: {averageRating.toFixed(1)} / 5</h3>
+      <div className="review-section mt-4">
+        <h4>Rate This Recipe</h4>
+        <div className="star-rating">
+          {[1, 2, 3, 4, 5].map((star) => (
+            <span
+              key={star}
+              className={`star ${userReview.rating >= star ? 'selected' : ''}`}
+              onClick={() => handleRatingClick(star)}
+            >
+              ★
+            </span>
+          ))}
+        </div>
+        {showCommentBox && (
+          <>
+            <div className="form-group mt-3">
+              <label>Comment:</label>
+              <textarea
+                className="form-control"
+                value={userReview.comment}
+                onChange={(e) => setUserReview({ ...userReview, comment: e.target.value })}
+                rows="3"
+              />
+            </div>
+            <button className="btn btn-primary mt-3" onClick={handleReviewSubmit}>
+              Submit Review
+            </button>
+          </>
+        )}
+      </div>
+      <h4 className="mt-5">Reviews</h4>
+      {reviews.length === 0 ? (
+        <p>No reviews yet.</p>
+      ) : (
+        reviews.map((review) => (
+          <div key={review._id} className="review mb-3">
+            <p>
+              <strong>{review.userId.name}</strong> rated {review.rating}/5
+            </p>
+            <p>{review.comment}</p>
+          </div>
+        ))
+      )}
       <div className="mt-3">
         <button
           className={`btn ${isFavorite ? 'btn-danger' : 'btn-secondary'}`}
@@ -115,14 +174,12 @@ function RecipeDetailsPage() {
         >
           {isFavorite ? 'Remove from Favorites' : 'Add to Favorites'}
         </button>
- 
         <button
           className="btn btn-primary ms-3"
-          onClick={handleSaveRecipe}
+          onClick={() => alert('Recipe saved!')}
         >
           Save Recipe
         </button>
- 
         <button
           className="btn btn-secondary ms-3"
           onClick={handleShareModal}
@@ -130,7 +187,6 @@ function RecipeDetailsPage() {
           {isShareModalOpen ? 'Close Sharing Options' : 'Share Recipe'}
         </button>
       </div>
- 
       {isShareModalOpen && (
         <div className="share-modal mt-4">
           <h4>Share This Recipe</h4>
