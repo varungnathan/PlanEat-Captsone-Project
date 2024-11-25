@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import { getAuth } from 'firebase/auth';
+import { CopyToClipboard } from 'react-copy-to-clipboard';
+import '../pagestyles/RecipeDetailsPage.css';
  
 function RecipeDetailsPage() {
   const { id } = useParams();
@@ -9,6 +11,10 @@ function RecipeDetailsPage() {
   const user = auth.currentUser;
   const [recipe, setRecipe] = useState(null);
   const [error, setError] = useState('');
+  const [isShareModalOpen, setIsShareModalOpen] = useState(false);
+  const [copied, setCopied] = useState(false);
+ 
+  const recipeLink = `http://localhost:3000/recipes/${id}`;
  
   useEffect(() => {
     const fetchRecipe = async () => {
@@ -39,6 +45,15 @@ function RecipeDetailsPage() {
     }
   };
  
+  const handleShareModal = () => {
+    setIsShareModalOpen((prev) => !prev);
+  };
+ 
+  const handleCopy = () => {
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+ 
   if (error) return <div>{error}</div>;
   if (!recipe) return <div>Loading...</div>;
  
@@ -60,11 +75,56 @@ function RecipeDetailsPage() {
       </ul>
       <h3>Instructions</h3>
       <p>{recipe.instructions}</p>
+ 
       <button className="btn btn-secondary mt-3" onClick={handleSaveRecipe}>
         Save Recipe
       </button>
+ 
+      {/* Share Button */}
+      <button className="btn btn-secondary mt-3 ms-3" onClick={handleShareModal}>
+        {isShareModalOpen ? 'Close Sharing Options' : 'Share Recipe'}
+      </button>
+ 
+      {/* Share Modal */}
+      {isShareModalOpen && (
+        <div className="share-modal mt-4">
+          <h4>Share This Recipe</h4>
+          <CopyToClipboard text={recipeLink} onCopy={handleCopy}>
+            <button className="btn btn-outline-primary mt-2">
+              {copied ? 'Link Copied!' : 'Copy Link'}
+            </button>
+          </CopyToClipboard>
+          <div className="social-buttons mt-3">
+            <a
+              href={`https://wa.me/?text=Check out this recipe: ${recipeLink}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="btn btn-success me-2"
+            >
+              Share on WhatsApp
+            </a>
+            <a
+              href={`https://twitter.com/intent/tweet?text=Check out this recipe!&url=${recipeLink}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="btn btn-info me-2"
+            >
+              Share on Twitter
+            </a>
+            <a
+              href={`https://www.facebook.com/sharer/sharer.php?u=${recipeLink}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="btn btn-primary"
+            >
+              Share on Facebook
+            </a>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
  
 export default RecipeDetailsPage;
+ 

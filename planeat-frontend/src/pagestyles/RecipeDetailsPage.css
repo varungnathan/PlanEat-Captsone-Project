@@ -1,0 +1,28 @@
+.share-modal {
+    padding: 15px;
+    background: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+  }
+ 
+  .social-buttons a {
+    display: inline-block;
+    margin-right: 10px;
+    padding: 8px 12px;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 4px;
+  }
+ 
+  .social-buttons a.btn-success {
+    background-color: #25d366;
+  }
+ 
+  .social-buttons a.btn-info {
+    background-color: #1da1f2;
+  }
+ 
+  .social-buttons a.btn-primary {
+    background-color: #1877f2;
+  }
+ 
