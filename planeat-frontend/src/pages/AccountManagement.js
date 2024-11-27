@@ -3,12 +3,12 @@ import axios from 'axios';
 import { getAuth } from 'firebase/auth';
 import { getStorage, ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
 import { Link } from 'react-router-dom';
- 
+
 function AccountManagement() {
   const auth = getAuth();
   const storage = getStorage();
   const user = auth.currentUser;
- 
+
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -24,14 +24,14 @@ function AccountManagement() {
   const [favoriteRecipes, setFavoriteRecipes] = useState([]);
   const [isSavedDropdownOpen, setIsSavedDropdownOpen] = useState(false);
   const [isFavoritesDropdownOpen, setIsFavoritesDropdownOpen] = useState(false);
- 
+
   useEffect(() => {
     const fetchUserDetails = async () => {
       if (!user) {
         setErrorMessage('User is not logged in.');
         return;
       }
- 
+
       try {
         const response = await axios.get(`http://localhost:5000/api/users/details/${user.uid}`);
         setFormData({
@@ -45,12 +45,10 @@ function AccountManagement() {
         setErrorMessage('Failed to load account details.');
       }
     };
- 
+
     const fetchSavedRecipes = async () => {
-      if (!user) {
-        return;
-      }
- 
+      if (!user) return;
+
       try {
         const response = await axios.get(`http://localhost:5000/api/users/saved-recipes/${user.uid}`);
         setSavedRecipes(response.data.savedRecipes);
@@ -58,12 +56,10 @@ function AccountManagement() {
         setErrorMessage('Failed to load saved recipes.');
       }
     };
- 
+
     const fetchFavoriteRecipes = async () => {
-      if (!user) {
-        return;
-      }
- 
+      if (!user) return;
+
       try {
         const response = await axios.get(`http://localhost:5000/api/users/favorites/${user.uid}`);
         setFavoriteRecipes(response.data.favorites);
@@ -71,12 +67,12 @@ function AccountManagement() {
         setErrorMessage('Failed to load favorite recipes.');
       }
     };
- 
+
     fetchUserDetails();
     fetchSavedRecipes();
     fetchFavoriteRecipes();
   }, [user]);
- 
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
@@ -84,54 +80,60 @@ function AccountManagement() {
       [name]: value,
     }));
   };
- 
+
   const handleImageUpload = (e) => {
     const file = e.target.files[0];
     setProfileImage(file);
   };
- 
+
   const uploadProfileImage = async () => {
     if (!profileImage || !user) {
       setErrorMessage('Please select an image and ensure you are logged in.');
       return;
     }
- 
-    const storageRef = ref(storage, `profileimage/${user.uid}`);
-    const uploadTask = uploadBytesResumable(storageRef, profileImage);
- 
-    uploadTask.on(
-      'state_changed',
-      (snapshot) => {
-        const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-        setUploadProgress(progress);
-      },
-      () => {
-        setErrorMessage('Failed to upload profile image.');
-      },
-      async () => {
-        try {
+
+    try {
+      const storageRef = ref(storage, `profileimage/${user.uid}/${profileImage.name}`);
+      const uploadTask = uploadBytesResumable(storageRef, profileImage);
+
+      uploadTask.on(
+        'state_changed',
+        (snapshot) => {
+          const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+          setUploadProgress(progress);
+        },
+        (error) => {
+          console.error("Upload error:", error.message);
+          setErrorMessage(`Failed to upload: ${error.message}`);
+        },
+        async () => {
           const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
           setFormData((prev) => ({ ...prev, profileImageUrl: downloadURL }));
- 
-          await axios.put(`http://localhost:5000/api/users/details/${user.uid}`, {
-            profileImageUrl: downloadURL,
-          });
- 
-          setSuccessMessage('Profile image updated successfully!');
-        } catch {
-          setErrorMessage('Failed to update profile image.');
+
+          try {
+            await axios.put(`http://localhost:5000/api/users/details/${user.uid}`, {
+              profileImageUrl: downloadURL,
+            });
+            setSuccessMessage('Profile image uploaded and updated successfully!');
+          } catch (error) {
+            console.error("Error updating profile image URL in MongoDB:", error.message);
+            setErrorMessage('Failed to update profile image URL in the database.');
+          }
         }
-      }
-    );
+      );
+    } catch (error) {
+      console.error("Error initializing upload:", error.message);
+      setErrorMessage('An error occurred while uploading the image.');
+    }
   };
- 
+
   const handleUpdate = async (e) => {
     e.preventDefault();
     if (!user) {
       setErrorMessage('User is not logged in.');
       return;
     }
- 
+
     try {
       await axios.put(`http://localhost:5000/api/users/details/${user.uid}`, {
         phone: formData.phone,
@@ -142,15 +144,15 @@ function AccountManagement() {
       setErrorMessage('Failed to update account details.');
     }
   };
- 
+
   const toggleSavedDropdown = () => {
     setIsSavedDropdownOpen((prev) => !prev);
   };
- 
+
   const toggleFavoritesDropdown = () => {
     setIsFavoritesDropdownOpen((prev) => !prev);
   };
- 
+
   return (
     <div className="container mt-5">
       <h2 className="text-center mb-4">Account Management</h2>
@@ -311,5 +313,5 @@ function AccountManagement() {
     </div>
   );
 }
- 
+
 export default AccountManagement;

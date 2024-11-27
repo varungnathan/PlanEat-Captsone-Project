@@ -16,6 +16,7 @@ import AccountManagement from './pages/AccountManagement';
 import Cart from './pages/Cart';
 import CheckoutPage from './pages/CheckoutPage';
 import MealPlannerPage from './pages/MealPlannerPage';
+import FamilyMealPlannerPage from './pages/FamilyMealPlannerPage';
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -59,6 +60,7 @@ function App() {
             <Route path="/cart" element={<Cart />} />
             <Route path="/checkout" element={<CheckoutPage />} />
             <Route path="/meal-planner" element={<MealPlannerPage />} />
+            <Route path="/family-meal-planner" element={<FamilyMealPlannerPage />} />
           </Routes>
         </div>
         <Footer />

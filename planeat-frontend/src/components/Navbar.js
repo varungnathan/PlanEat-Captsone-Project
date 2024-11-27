@@ -60,11 +60,18 @@ function Navbar({ isAuthenticated, handleLogout }) {
               </Link>
             </li>
             {isAuthenticated && (
-              <li className="nav-item">
-                <Link className="nav-link nav-text" to="/meal-planner">
-                  Meal Planner
-                </Link>
-              </li>
+              <>
+                <li className="nav-item">
+                  <Link className="nav-link nav-text" to="/meal-planner">
+                    Meal Planner
+                  </Link>
+                </li>
+                <li className="nav-item">
+                  <Link className="nav-link nav-text" to="/family-meal-planner">
+                    Family Meal Planner
+                  </Link>
+                </li>
+              </>
             )}
             <li className="nav-item">
               <Link className="nav-link nav-text d-flex align-items-center" to="/cart">
