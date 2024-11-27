@@ -8,7 +8,6 @@ function StorePage() {
   const [searchTerm, setSearchTerm] = useState('');
   const [filterType, setFilterType] = useState('');
   const [sortOption, setSortOption] = useState('');
-  const [cart, setCart] = useState({});
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -32,24 +31,6 @@ function StorePage() {
       if (sortOption === 'price-desc') return b.price - a.price;
       return 0;
     });
-
-  const addToCart = (productId) => {
-    setCart((prevCart) => ({
-      ...prevCart,
-      [productId]: (prevCart[productId] || 0) + 1,
-    }));
-  };
-
-  const updateQuantity = (productId, delta) => {
-    setCart((prevCart) => {
-      const newQuantity = (prevCart[productId] || 0) + delta;
-      if (newQuantity <= 0) {
-        const { [productId]: _, ...rest } = prevCart;
-        return rest;
-      }
-      return { ...prevCart, [productId]: newQuantity };
-    });
-  };
 
   return (
     <div className="container mt-5">
@@ -108,30 +89,6 @@ function StorePage() {
                   <Link to={`/store/${product._id}`} className="btn btn-primary btn-sm">
                     View
                   </Link>
-                  {cart[product._id] ? (
-                    <div className="quantity-controls">
-                      <button
-                        className="btn btn-secondary btn-sm"
-                        onClick={() => updateQuantity(product._id, -1)}
-                      >
-                        -
-                      </button>
-                      <span className="mx-2">{cart[product._id]}</span>
-                      <button
-                        className="btn btn-secondary btn-sm"
-                        onClick={() => updateQuantity(product._id, 1)}
-                      >
-                        +
-                      </button>
-                    </div>
-                  ) : (
-                    <button
-                      className="btn btn-success btn-sm"
-                      onClick={() => addToCart(product._id)}
-                    >
-                      Add to Cart
-                    </button>
-                  )}
                 </div>
               </div>
             </div>
