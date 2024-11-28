@@ -126,6 +126,11 @@ function Navbar({ isAuthenticated, handleLogout }) {
                       </Link>
                     </li>
                     <li>
+                      <Link className="dropdown-item" to="/orders">
+                        My Orders
+                      </Link>
+                    </li>
+                    <li>
                       <button
                         className="dropdown-item"
                         onClick={handleLogoutAndRedirect}

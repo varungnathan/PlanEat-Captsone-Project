@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { getAuth } from 'firebase/auth';
-import { getDatabase, ref, remove } from 'firebase/database';
+import { getDatabase, ref, set, remove, push } from 'firebase/database';
 import { useNavigate } from 'react-router-dom';
 
 function CheckoutPage() {
@@ -79,14 +79,21 @@ function CheckoutPage() {
     }
 
     try {
-      // Clear the cart in Firebase Realtime Database
       if (userId) {
+        const orderRef = ref(database, `orders/${userId}`);
+        const newOrderRef = push(orderRef);
+        await set(newOrderRef, {
+          billingAddress,
+          shippingAddress: useBillingAsShipping ? billingAddress : shippingAddress,
+          orderDate: new Date().toISOString(),
+        });
+
         const cartRef = ref(database, `carts/${userId}`);
         await remove(cartRef);
       }
 
-      alert('Checkout successful! Your cart has been cleared.');
-      navigate('/');
+      alert('Checkout successful! Your order has been placed.');
+      navigate('/orders');
     } catch (error) {
       console.error('Error during checkout:', error);
       setErrorMessage('Failed to complete checkout. Please try again.');
