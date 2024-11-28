@@ -1,14 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { getAuth } from 'firebase/auth';
+import { getDatabase, ref, remove } from 'firebase/database';
 import { useNavigate } from 'react-router-dom';
 
 function CheckoutPage() {
   const auth = getAuth();
+  const database = getDatabase();
   const user = auth.currentUser;
   const navigate = useNavigate();
 
   const [userId, setUserId] = useState(null);
-  const [cartId, setCartId] = useState(null);
   const [billingAddress, setBillingAddress] = useState({
     firstName: '',
     lastName: '',
@@ -33,32 +34,11 @@ function CheckoutPage() {
   const [errorMessage, setErrorMessage] = useState('');
 
   useEffect(() => {
-    const fetchUserAndCartDetails = async () => {
-      try {
-        if (!user) {
-          setErrorMessage('User not logged in.');
-          return;
-        }
-
-        const userResponse = await fetch(`http://localhost:5000/api/users/firebase/${user.uid}`);
-        if (!userResponse.ok) {
-          throw new Error('Failed to fetch user details.');
-        }
-        const userData = await userResponse.json();
-        setUserId(userData._id);
-
-        const cartResponse = await fetch(`http://localhost:5000/api/carts/user/${userData._id}`);
-        if (!cartResponse.ok) {
-          throw new Error('Failed to fetch cart details.');
-        }
-        const cartData = await cartResponse.json();
-        setCartId(cartData._id);
-      } catch (error) {
-        setErrorMessage('Failed to load checkout details. Please try again later.');
-      }
-    };
-
-    fetchUserAndCartDetails();
+    if (user) {
+      setUserId(user.uid);
+    } else {
+      setErrorMessage('User not logged in.');
+    }
   }, [user]);
 
   const handleInputChange = (e, setAddress) => {
@@ -99,18 +79,16 @@ function CheckoutPage() {
     }
 
     try {
-      if (cartId) {
-        const deleteResponse = await fetch(`http://localhost:5000/api/carts/${cartId}`, {
-          method: 'DELETE',
-        });
-
-        if (!deleteResponse.ok) {
-          throw new Error('Failed to clear cart.');
-        }
+      // Clear the cart in Firebase Realtime Database
+      if (userId) {
+        const cartRef = ref(database, `carts/${userId}`);
+        await remove(cartRef);
       }
 
+      alert('Checkout successful! Your cart has been cleared.');
       navigate('/');
     } catch (error) {
+      console.error('Error during checkout:', error);
       setErrorMessage('Failed to complete checkout. Please try again.');
     }
   };

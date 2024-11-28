@@ -1,11 +1,12 @@
-import React, { useEffect, useState, useCallback } from 'react';
-import axios from 'axios';
+import React, { useEffect, useState } from 'react';
 import { getAuth } from 'firebase/auth';
+import { getDatabase, ref, onValue, set, update, remove } from 'firebase/database';
 import { useNavigate } from 'react-router-dom';
 
 function Cart() {
   const auth = getAuth();
   const user = auth.currentUser;
+  const database = getDatabase();
   const navigate = useNavigate();
 
   const [cartItems, setCartItems] = useState([]);
@@ -14,26 +15,28 @@ function Cart() {
   const [grandTotal, setGrandTotal] = useState(0);
   const [errorMessage, setErrorMessage] = useState('');
 
-  const fetchCartItems = useCallback(async () => {
+  useEffect(() => {
     if (!user) {
       setErrorMessage('Please log in to view your cart.');
       return;
     }
 
-    try {
-      const response = await axios.get(`http://localhost:5000/api/cart/${user.uid}`);
-      const items = response.data.items || [];
-      setCartItems(items);
-      calculateTotals(items);
-    } catch (error) {
-      console.error('Error fetching cart items:', error);
-      setErrorMessage('Failed to load cart items.');
-    }
-  }, [user]);
-
-  useEffect(() => {
-    fetchCartItems();
-  }, [fetchCartItems]);
+    const cartRef = ref(database, `carts/${user.uid}`);
+    onValue(cartRef, (snapshot) => {
+      const data = snapshot.val();
+      if (data) {
+        const items = Object.keys(data).map((key) => ({
+          ...data[key],
+          id: key,
+        }));
+        setCartItems(items);
+        calculateTotals(items);
+      } else {
+        setCartItems([]);
+        calculateTotals([]);
+      }
+    });
+  }, [user, database]);
 
   const calculateTotals = (items) => {
     if (!items || items.length === 0) {
@@ -43,49 +46,37 @@ function Cart() {
       return;
     }
 
-    const total = items.reduce((acc, item) => {
-      const price = item.productId?.price || 0;
-      return acc + price * item.quantity;
-    }, 0);
-
+    const total = items.reduce((acc, item) => acc + item.price * item.quantity, 0);
     const hstAmount = total * 0.13;
     setTotalPrice(total);
     setHst(hstAmount);
     setGrandTotal(total + hstAmount);
   };
 
-  const handleQuantityChange = async (productId, delta) => {
+  const handleQuantityChange = (id, delta) => {
     if (!user) return;
 
-    try {
-      const response = await axios.put(`http://localhost:5000/api/cart/${user.uid}`, {
-        productId,
-        delta,
+    const itemRef = ref(database, `carts/${user.uid}/${id}`);
+    const currentItem = cartItems.find((item) => item.id === id);
+
+    if (currentItem.quantity + delta > 0) {
+      update(itemRef, {
+        quantity: currentItem.quantity + delta,
       });
-
-      const updatedItems = response.data.items || [];
-      setCartItems(updatedItems);
-      calculateTotals(updatedItems);
-    } catch (error) {
-      console.error('Error updating cart quantity:', error);
+    } else {
+      remove(itemRef);
     }
   };
 
-  const handleRemoveItem = async (productId) => {
+  const handleRemoveItem = (id) => {
     if (!user) return;
 
-    try {
-      const response = await axios.delete(`http://localhost:5000/api/cart/${user.uid}/${productId}`);
-      const updatedItems = response.data.items || [];
-      setCartItems(updatedItems);
-      calculateTotals(updatedItems);
-    } catch (error) {
-      console.error('Error removing cart item:', error);
-    }
+    const itemRef = ref(database, `carts/${user.uid}/${id}`);
+    remove(itemRef);
   };
 
-  const handleEditItem = (productId) => {
-    navigate(`/store/${productId}`);
+  const handleEditItem = (id) => {
+    navigate(`/store/${id}`);
   };
 
   const handleProceedToCheckout = () => {
@@ -105,12 +96,12 @@ function Cart() {
         <>
           <div className="cart-items">
             {cartItems.map((item) => (
-              <div className="row mb-4 align-items-center" key={item.productId?._id || item._id}>
+              <div className="row mb-4 align-items-center" key={item.id}>
                 <div className="col-md-2">
-                  {item.productId?.imageUrl ? (
+                  {item.imageUrl ? (
                     <img
-                      src={item.productId.imageUrl}
-                      alt={item.productId.name || 'Unknown Product'}
+                      src={item.imageUrl}
+                      alt={item.name || 'Unknown Product'}
                       className="img-fluid"
                       style={{ maxHeight: '100px', objectFit: 'cover' }}
                     />
@@ -119,14 +110,14 @@ function Cart() {
                   )}
                 </div>
                 <div className="col-md-4">
-                  <h5>{item.productId?.name || 'Unknown Product'}</h5>
-                  <p>${item.productId?.price?.toFixed(2) || '0.00'}</p>
+                  <h5>{item.name || 'Unknown Product'}</h5>
+                  <p>${item.price.toFixed(2)}</p>
                 </div>
                 <div className="col-md-3">
                   <div className="d-flex align-items-center">
                     <button
                       className="btn btn-secondary"
-                      onClick={() => handleQuantityChange(item.productId?._id, -1)}
+                      onClick={() => handleQuantityChange(item.id, -1)}
                       disabled={item.quantity === 1}
                     >
                       -
@@ -134,7 +125,7 @@ function Cart() {
                     <span className="mx-3">{item.quantity}</span>
                     <button
                       className="btn btn-secondary"
-                      onClick={() => handleQuantityChange(item.productId?._id, 1)}
+                      onClick={() => handleQuantityChange(item.id, 1)}
                     >
                       +
                     </button>
@@ -143,13 +134,13 @@ function Cart() {
                 <div className="col-md-3 text-end">
                   <button
                     className="btn btn-primary me-2"
-                    onClick={() => handleEditItem(item.productId?._id)}
+                    onClick={() => handleEditItem(item.id)}
                   >
                     Edit
                   </button>
                   <button
                     className="btn btn-danger"
-                    onClick={() => handleRemoveItem(item.productId?._id)}
+                    onClick={() => handleRemoveItem(item.id)}
                   >
                     Remove
                   </button>

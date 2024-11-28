@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import axios from 'axios';
+import { getDatabase, ref, set } from 'firebase/database';
 import { getAuth } from 'firebase/auth';
 import '../pagestyles/StoreDetails.css';
 
@@ -8,6 +8,7 @@ function StoreDetails() {
   const { id } = useParams();
   const navigate = useNavigate();
   const auth = getAuth();
+  const database = getDatabase();
   const user = auth.currentUser;
 
   const [product, setProduct] = useState(null);
@@ -20,12 +21,13 @@ function StoreDetails() {
   useEffect(() => {
     const fetchProduct = async () => {
       try {
-        const response = await axios.get(`http://localhost:5000/api/products/${id}`);
-        setProduct(response.data);
+        const response = await fetch(`http://localhost:5000/api/products/${id}`);
+        const data = await response.json();
+        setProduct(data);
 
-        const recResponse = await axios.get('http://localhost:5000/api/products');
-        const filteredRecommendations = recResponse.data.filter((p) => p._id !== id).slice(0, 4);
-        setRecommendations(filteredRecommendations);
+        const recResponse = await fetch('http://localhost:5000/api/products');
+        const recData = await recResponse.json();
+        setRecommendations(recData.filter((p) => p._id !== id).slice(0, 4));
       } catch (error) {
         console.error('Error fetching product details:', error);
       }
@@ -34,8 +36,6 @@ function StoreDetails() {
     fetchProduct();
   }, [id]);
 
-  const isVeg = product?.type === 'Veg';
-
   const handleAddToCart = async () => {
     if (!user) {
       setLoginModal(true);
@@ -43,9 +43,12 @@ function StoreDetails() {
     }
 
     try {
-      await axios.post(`http://localhost:5000/api/cart/${user.uid}`, {
-        productId: product._id,
+      const cartRef = ref(database, `carts/${user.uid}/${product._id}`);
+      await set(cartRef, {
+        name: product.name,
+        price: product.price,
         quantity,
+        imageUrl: product.imageUrl,
       });
       alert('Added to cart successfully!');
     } catch (error) {
@@ -79,7 +82,6 @@ function StoreDetails() {
             alt={product.name}
             className="img-fluid product-image"
           />
-          {/* Nutritional Information Section */}
           {product.nutritionalInfo && (
             <div className="nutritional-info mt-4">
               <h3>Nutritional Information</h3>
@@ -104,19 +106,21 @@ function StoreDetails() {
         </div>
         <div className="col-md-6">
           <h1 className="product-name">{product.name}</h1>
-          <p className="product-price">${product.price?.toFixed(2) || 'N/A'}</p>
+          <p className="product-price">${product.price?.toFixed(2)}</p>
           <div className="product-tags">
             <span className="country-tag">{product.origin}</span>
-            <span className={`type-tag ${isVeg ? 'veg' : 'non-veg'}`}>
+            <span
+              className={`type-tag ${product.type === 'Veg' ? 'veg' : 'non-veg'}`}
+            >
               <span
                 className="material-symbols-outlined type-icon"
                 style={{
-                  color: isVeg ? '#228B22' : '#D32F2F',
+                  color: product.type === 'Veg' ? '#228B22' : '#D32F2F',
                 }}
               >
-                {isVeg ? 'eco' : 'square_dot'}
+                {product.type === 'Veg' ? 'eco' : 'square_dot'}
               </span>
-              {isVeg ? 'Veg' : 'Non-Veg'}
+              {product.type}
             </span>
           </div>
 
@@ -205,7 +209,7 @@ function StoreDetails() {
                 />
                 <div className="card-body">
                   <h5 className="card-title">{recProduct.name}</h5>
-                  <p>${recProduct.price?.toFixed(2) || 'N/A'}</p>
+                  <p>${recProduct.price?.toFixed(2)}</p>
                   <Link to={`/store/${recProduct._id}`} className="btn btn-primary btn-sm">
                     View
                   </Link>
