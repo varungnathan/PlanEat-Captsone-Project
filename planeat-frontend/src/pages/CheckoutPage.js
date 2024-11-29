@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { getAuth } from 'firebase/auth';
-import { getDatabase, ref, set, remove, push } from 'firebase/database';
+import { getDatabase, ref, set, remove, push, onValue } from 'firebase/database';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios'; // For fetching product details from MongoDB
 
 function CheckoutPage() {
   const auth = getAuth();
@@ -10,6 +11,7 @@ function CheckoutPage() {
   const navigate = useNavigate();
 
   const [userId, setUserId] = useState(null);
+  const [cartItems, setCartItems] = useState([]);
   const [billingAddress, setBillingAddress] = useState({
     firstName: '',
     lastName: '',
@@ -36,10 +38,44 @@ function CheckoutPage() {
   useEffect(() => {
     if (user) {
       setUserId(user.uid);
+
+      // Fetch cart items from Firebase
+      const cartRef = ref(database, `carts/${user.uid}`);
+      onValue(cartRef, async (snapshot) => {
+        const data = snapshot.val();
+        if (data) {
+          const items = Object.keys(data).map((key) => ({
+            id: key,
+            ...data[key],
+          }));
+
+          // Fetch product details from MongoDB for each item
+          const detailedItems = await Promise.all(
+            items.map(async (item) => {
+              try {
+                const response = await axios.get(`/api/products/${item.productId}`);
+                return {
+                  ...item,
+                  name: response.data.name,
+                  price: response.data.price,
+                  imageUrl: response.data.imageUrl,
+                };
+              } catch (error) {
+                console.error('Error fetching product details:', error);
+                return { ...item }; // Return the item without additional details if an error occurs
+              }
+            })
+          );
+
+          setCartItems(detailedItems);
+        } else {
+          setCartItems([]);
+        }
+      });
     } else {
       setErrorMessage('User not logged in.');
     }
-  }, [user]);
+  }, [user, database]);
 
   const handleInputChange = (e, setAddress) => {
     const { name, value } = e.target;
@@ -78,22 +114,37 @@ function CheckoutPage() {
       return;
     }
 
+    if (cartItems.length === 0) {
+      setErrorMessage('Your cart is empty.');
+      return;
+    }
+
     try {
       if (userId) {
         const orderRef = ref(database, `orders/${userId}`);
         const newOrderRef = push(orderRef);
+
+        const totalPrice = cartItems.reduce(
+          (total, item) => total + item.price * item.quantity,
+          0
+        );
+        const tax = totalPrice * 0.13;
+
         await set(newOrderRef, {
           billingAddress,
           shippingAddress: useBillingAsShipping ? billingAddress : shippingAddress,
           orderDate: new Date().toISOString(),
+          items: cartItems,
+          tax: tax.toFixed(2),
+          totalPrice: (totalPrice + tax).toFixed(2),
         });
 
         const cartRef = ref(database, `carts/${userId}`);
         await remove(cartRef);
-      }
 
-      alert('Checkout successful! Your order has been placed.');
-      navigate('/orders');
+        alert('Checkout successful! Your order has been placed.');
+        navigate('/orders');
+      }
     } catch (error) {
       console.error('Error during checkout:', error);
       setErrorMessage('Failed to complete checkout. Please try again.');
