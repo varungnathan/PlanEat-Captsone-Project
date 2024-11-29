@@ -3,6 +3,8 @@ const serviceAccount = require('../key.json');
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
+  databaseURL: 'https://planeatscapstone-default-rtdb.firebaseio.com/',
 });
 
-module.exports = admin;
+const db = admin.database();
+module.exports = db;
