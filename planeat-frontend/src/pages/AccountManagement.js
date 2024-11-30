@@ -199,7 +199,7 @@ function AccountManagement() {
           />
           <button
             type="button"
-            className="btn btn-secondary mt-3"
+            className="btn btn-dark mt-3"
             onClick={uploadProfileImage}
           >
             Upload Image
@@ -253,62 +253,58 @@ function AccountManagement() {
         </div>
       </div>
       <div className="mt-5">
-        <h3>
-          <button
-            className="btn btn-primary w-100"
-            onClick={toggleSavedDropdown}
-          >
-            {isSavedDropdownOpen ? 'Hide Saved Recipes' : 'View Saved Recipes'}
-          </button>
-        </h3>
-        {isSavedDropdownOpen && (
-          <div className="mt-3">
-            {savedRecipes.length === 0 ? (
-              <p>No saved recipes yet.</p>
-            ) : (
-              <div>
-                {savedRecipes.map((recipe) => (
-                  <div key={recipe._id} className="mb-3">
-                    <h5>{recipe.title}</h5>
-                    <p>{recipe.description}</p>
-                    <Link to={`/recipes/${recipe._id}`} className="btn btn-primary btn-sm">
-                      View Recipe
-                    </Link>
-                  </div>
-                ))}
+        <div className="row">
+          <div className="col-md-6">
+            <button
+              className="btn btn-outline-primary w-100"
+              onClick={toggleSavedDropdown}
+            >
+              {isSavedDropdownOpen ? 'Hide Saved Recipes' : 'View Saved Recipes'}
+            </button>
+            {isSavedDropdownOpen && (
+              <div className="mt-3">
+                {savedRecipes.length === 0 ? (
+                  <p>No saved recipes yet.</p>
+                ) : (
+                  savedRecipes.map((recipe) => (
+                    <div key={recipe._id} className="mb-3">
+                      <h5>{recipe.title}</h5>
+                      <p>{recipe.description}</p>
+                      <Link to={`/recipes/${recipe._id}`} className="btn btn-outline-primary btn-sm">
+                        View Recipe
+                      </Link>
+                    </div>
+                  ))
+                )}
               </div>
             )}
           </div>
-        )}
-      </div>
-      <div className="mt-5">
-        <h3>
-          <button
-            className="btn btn-success w-100"
-            onClick={toggleFavoritesDropdown}
-          >
-            {isFavoritesDropdownOpen ? 'Hide Favorite Recipes' : 'View Favorite Recipes'}
-          </button>
-        </h3>
-        {isFavoritesDropdownOpen && (
-          <div className="mt-3">
-            {favoriteRecipes.length === 0 ? (
-              <p>No favorite recipes yet.</p>
-            ) : (
-              <div>
-                {favoriteRecipes.map((recipe) => (
-                  <div key={recipe._id} className="mb-3">
-                    <h5>{recipe.title}</h5>
-                    <p>{recipe.description}</p>
-                    <Link to={`/recipes/${recipe._id}`} className="btn btn-success btn-sm">
-                      View Recipe
-                    </Link>
-                  </div>
-                ))}
+          <div className="col-md-6">
+            <button
+              className="btn btn-outline-success w-100"
+              onClick={toggleFavoritesDropdown}
+            >
+              {isFavoritesDropdownOpen ? 'Hide Favorite Recipes' : 'View Favorite Recipes'}
+            </button>
+            {isFavoritesDropdownOpen && (
+              <div className="mt-3">
+                {favoriteRecipes.length === 0 ? (
+                  <p>No favorite recipes yet.</p>
+                ) : (
+                  favoriteRecipes.map((recipe) => (
+                    <div key={recipe._id} className="mb-3">
+                      <h5>{recipe.title}</h5>
+                      <p>{recipe.description}</p>
+                      <Link to={`/recipes/${recipe._id}`} className="btn btn-outline-success btn-sm">
+                        View Recipe
+                      </Link>
+                    </div>
+                  ))
+                )}
               </div>
             )}
           </div>
-        )}
+        </div>
       </div>
     </div>
   );

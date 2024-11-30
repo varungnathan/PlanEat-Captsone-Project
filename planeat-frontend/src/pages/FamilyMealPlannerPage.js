@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import { getDatabase, ref, push, set, onValue, update, remove } from 'firebase/database';
 import { getAuth } from 'firebase/auth';
+import { gapi } from 'gapi-script';
 
 function FamilyMealPlannerPage() {
   const auth = getAuth();
@@ -19,8 +20,53 @@ function FamilyMealPlannerPage() {
   const [editingPlanId, setEditingPlanId] = useState(null);
   const [errorMessage, setErrorMessage] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
+  const [syncStatusMessage, setSyncStatusMessage] = useState('');
   const [newMemberName, setNewMemberName] = useState('');
   const [newMemberRelationship, setNewMemberRelationship] = useState('');
+
+  const GOOGLE_CLIENT_ID = '373521039643-1fssuvvur932q65orccqode8sh6l9hh9.apps.googleusercontent.com';
+  const GOOGLE_API_KEY = 'AIzaSyDlmM1fPncleeUUEdOSsMT8nLTUNBh4DFU';
+
+  // Initialize Google API client
+  useEffect(() => {
+    gapi.load('client:auth2', () => {
+      gapi.client.init({
+        apiKey: GOOGLE_API_KEY,
+        clientId: GOOGLE_CLIENT_ID,
+        discoveryDocs: ['https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest'],
+        scope: 'https://www.googleapis.com/auth/calendar.events',
+      });
+    });
+  }, []);
+
+  // Function to add an event to Google Calendar
+  const addEventToGoogleCalendar = async (mealPlan) => {
+    try {
+      await gapi.auth2.getAuthInstance().signIn();
+      const event = {
+        summary: `Meal Plan: ${mealPlan.memberName} - ${mealPlan.meals[0]?.time}`,
+        description: `Recipe: ${
+          recipes.find((r) => r._id === mealPlan.meals[0]?.recipe)?.title || 'Unknown'
+        }`,
+        start: {
+          dateTime: `${mealPlan.date}T09:00:00`,
+          timeZone: 'America/Toronto',
+        },
+        end: {
+          dateTime: `${mealPlan.date}T10:00:00`,
+          timeZone: 'America/Toronto',
+        },
+      };
+      const request = gapi.client.calendar.events.insert({
+        calendarId: 'primary',
+        resource: event,
+      });
+      await request.execute();
+      setSyncStatusMessage('Meal plan synced to Google Calendar!');
+    } catch (error) {
+      setSyncStatusMessage('Failed to sync meal plan to Google Calendar.');
+    }
+  };
 
   const fetchMealPlans = useCallback(() => {
     if (user?.uid) {
@@ -145,6 +191,13 @@ function FamilyMealPlannerPage() {
           setSuccessMessage('Meal plan added successfully!');
           setErrorMessage('');
           fetchMealPlans();
+
+          // Add the event to Google Calendar
+          addEventToGoogleCalendar({
+            memberName: familyMembers.find((m) => m.id === selectedMember)?.name || 'Unknown Member',
+            date: mealDate,
+            meals: [{ time: mealTime, recipe: selectedRecipe }],
+          });
         })
         .catch(() => {
           setErrorMessage('Failed to add meal plan.');
@@ -186,6 +239,7 @@ function FamilyMealPlannerPage() {
       <h2 className="text-center">Family Meal Planner</h2>
       {errorMessage && <p className="text-danger">{errorMessage}</p>}
       {successMessage && <p className="text-success">{successMessage}</p>}
+      {syncStatusMessage && <p className="text-info">{syncStatusMessage}</p>}
 
       <h3>Add Family Member</h3>
       <div className="row mb-3">
@@ -298,6 +352,7 @@ function FamilyMealPlannerPage() {
               <th>Time</th>
               <th>Recipe</th>
               <th>Actions</th>
+              <th>Google Calendar Sync</th>
             </tr>
           </thead>
           <tbody>
@@ -323,6 +378,14 @@ function FamilyMealPlannerPage() {
                         onClick={() => deleteMealPlan(plan.id, plan.memberId)}
                       >
                         Delete
+                      </button>
+                    </td>
+                    <td>
+                      <button
+                        className="btn btn-primary btn-sm"
+                        onClick={() => addEventToGoogleCalendar(plan)}
+                      >
+                        Sync to Google Calendar
                       </button>
                     </td>
                   </React.Fragment>
