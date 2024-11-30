@@ -34,7 +34,7 @@ function OrdersPage() {
     });
   }, [user, database]);
 
-  const downloadReceipt = (order) => {
+  const generatePDF = (order, action) => {
     if (!order.items || order.items.length === 0) {
       alert('No items found in this order to generate a receipt.');
       return;
@@ -97,7 +97,7 @@ function OrdersPage() {
 
     const customerName = order.billingAddress?.firstName || 'Customer';
     doc.setFont('times', 'bold');
-    doc.text(`Dear ${customerName}, thank you for shopping with us!`, 10, 105);
+    doc.text(`Dear ${customerName}, Thank you for shopping with us!`, 10, 105);
     doc.text('Here are the order details:', 10, 115);
 
     const tableColumnHeaders = ['Item #', 'Description', 'Quantity', 'Price', 'Total'];
@@ -176,12 +176,15 @@ function OrdersPage() {
       { maxWidth: 190 }
     );
 
-    const timestamp = new Date().toLocaleString();
-    doc.setFont('times', 'italic');
-    doc.setFontSize(10);
-    doc.text(`Bill Generated: ${timestamp}`, 105, 290, null, null, 'center');
+    if (additionalY + 90 > 290) {
+      doc.addPage();
+    }
 
-    doc.save(`Order_${order.id}.pdf`);
+    if (action === 'view') {
+      window.open(doc.output('bloburl'), '_blank');
+    } else {
+      doc.save(`Order_${order.id}.pdf`);
+    }
   };
 
   if (!user) {
@@ -221,10 +224,16 @@ function OrdersPage() {
                 </td>
                 <td>
                   <button
-                    className="btn btn-secondary btn-sm"
-                    onClick={() => downloadReceipt(order)}
+                    className="btn btn-secondary btn-sm me-2"
+                    onClick={() => generatePDF(order, 'view')}
                   >
-                    Download Receipt
+                    View
+                  </button>
+                  <button
+                    className="btn btn-primary btn-sm"
+                    onClick={() => generatePDF(order, 'download')}
+                  >
+                    Download
                   </button>
                 </td>
               </tr>
