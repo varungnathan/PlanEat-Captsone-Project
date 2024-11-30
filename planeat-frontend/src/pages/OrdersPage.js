@@ -150,23 +150,31 @@ function OrdersPage() {
     doc.text('Return and Refund Policy', 10, additionalY);
     doc.setFont('times', 'normal');
     doc.text(
-      'If you are not satisfied with your purchase, you may return it within 30 days.',
+      'If you are not satisfied with your purchase, you may return it within 30 days. Visit our website for more details.',
       10,
-      additionalY + 10
+      additionalY + 10,
+      { maxWidth: 190 }
     );
-    doc.text('Visit our website for more details.', 10, additionalY + 15);
 
     doc.setFont('times', 'bold');
     doc.text('Support Information', 10, additionalY + 30);
     doc.setFont('times', 'normal');
-    doc.text('Need assistance? Contact us at +1 2268999660 or', 10, additionalY + 40);
-    doc.text('email us at innovators@conestogac.on.ca.', 10, additionalY + 45);
+    doc.text(
+      'Need assistance? Contact us at +1 2268999660 or email us at innovators@conestogac.on.ca.',
+      10,
+      additionalY + 40,
+      { maxWidth: 190 }
+    );
 
     doc.setFont('times', 'bold');
     doc.text('Exclusive Discount Code', 10, additionalY + 60);
     doc.setFont('times', 'normal');
-    doc.text('Use code THANKYOU20 for 20% off your next order.', 10, additionalY + 70);
-    doc.text('Valid until: 12/31/2024', 10, additionalY + 75);
+    doc.text(
+      'Use code THANKYOU20 for 20% off your next order. Valid until: 12/31/2024',
+      10,
+      additionalY + 70,
+      { maxWidth: 190 }
+    );
 
     const timestamp = new Date().toLocaleString();
     doc.setFont('times', 'italic');
@@ -191,7 +199,6 @@ function OrdersPage() {
             <tr>
               <th>Order Number</th>
               <th>Item Details</th>
-              <th>Quantity</th>
               <th>Price</th>
               <th>Shipping Address</th>
               <th>Actions</th>
@@ -206,11 +213,6 @@ function OrdersPage() {
                     <div key={idx}>
                       <strong>{item.name || 'Unknown Product'}</strong>
                     </div>
-                  ))}
-                </td>
-                <td>
-                  {order.items.map((item, idx) => (
-                    <div key={idx}>{item.quantity || 1}</div>
                   ))}
                 </td>
                 <td>${Number(order.totalPrice || 0).toFixed(2)}</td>
