@@ -3,6 +3,7 @@ import { getAuth } from 'firebase/auth';
 import { getDatabase, ref, onValue } from 'firebase/database';
 import jsPDF from 'jspdf';
 import 'jspdf-autotable';
+import logo from '../pagestyles/pdflogo.png';
 
 function OrdersPage() {
   const auth = getAuth();
@@ -41,59 +42,63 @@ function OrdersPage() {
 
     const doc = new jsPDF();
 
-    doc.setFont('times', 'bold');
-    doc.setFontSize(16);
-    doc.text('PlanEat', 105, 10, null, null, 'center');
+    const imgWidth = 40;
+    const imgHeight = 15;
+    const imgX = (210 - imgWidth) / 2;
+    const imgY = 10;
+
+    doc.addImage(logo, 'PNG', imgX, imgY, imgWidth, imgHeight);
+
     doc.setFont('times', 'normal');
     doc.setFontSize(12);
-    doc.text('299 Doon Valley Dr, Kitchener, ON CA, N2G 4M4', 105, 15, null, null, 'center');
-    doc.text('Phone: +1 2268999660', 105, 20, null, null, 'center');
-    doc.text('E-Mail: innovators@conestogac.on.ca', 105, 25, null, null, 'center');
+    doc.text('299 Doon Valley Dr, Kitchener, ON CA, N2G 4M4', 105, 30, null, null, 'center');
+    doc.text('Phone: +1 2268999660', 105, 35, null, null, 'center');
+    doc.text('E-Mail: innovators@conestogac.on.ca', 105, 40, null, null, 'center');
 
     doc.setFont('times', 'bold');
     doc.setFontSize(14);
-    doc.text('Order Confirmation', 10, 35);
+    doc.text('Order Confirmation', 10, 50);
 
     doc.setFontSize(12);
     doc.setFont('times', 'normal');
-    doc.text(`Order ID: ${order.id}`, 10, 45);
-    doc.text(`Date: ${new Date(order.orderDate || Date.now()).toLocaleDateString()}`, 10, 50);
+    doc.text(`Order ID: ${order.id}`, 10, 60);
+    doc.text(`Date: ${new Date(order.orderDate || Date.now()).toLocaleDateString()}`, 10, 65);
 
     doc.setFont('times', 'bold');
-    doc.text('Billing Address', 10, 60);
-    doc.text('Shipping Address', 110, 60);
+    doc.text('Billing Address', 10, 75);
+    doc.text('Shipping Address', 110, 75);
 
     doc.setFont('times', 'normal');
     doc.text(
       `${order.billingAddress?.firstName || ''} ${order.billingAddress?.lastName || ''}`,
       10,
-      65
+      80
     );
-    doc.text(order.billingAddress?.address || '', 10, 70);
+    doc.text(order.billingAddress?.address || '', 10, 85);
     doc.text(
       `${order.billingAddress?.city || ''}, ${order.billingAddress?.postalCode || ''}`,
       10,
-      75
+      90
     );
-    doc.text(order.billingAddress?.country || '', 10, 80);
+    doc.text(order.billingAddress?.country || '', 10, 95);
 
     doc.text(
       `${order.shippingAddress?.firstName || ''} ${order.shippingAddress?.lastName || ''}`,
       110,
-      65
+      80
     );
-    doc.text(order.shippingAddress?.address || '', 110, 70);
+    doc.text(order.shippingAddress?.address || '', 110, 85);
     doc.text(
       `${order.shippingAddress?.city || ''}, ${order.shippingAddress?.postalCode || ''}`,
       110,
-      75
+      90
     );
-    doc.text(order.shippingAddress?.country || '', 110, 80);
+    doc.text(order.shippingAddress?.country || '', 110, 95);
 
     const customerName = order.billingAddress?.firstName || 'Customer';
     doc.setFont('times', 'bold');
-    doc.text(`Dear ${customerName}, thank you for shopping with us!`, 10, 90);
-    doc.text('Here are the order details:', 10, 100);
+    doc.text(`Dear ${customerName}, thank you for shopping with us!`, 10, 105);
+    doc.text('Here are the order details:', 10, 115);
 
     const tableColumnHeaders = ['Item #', 'Description', 'Quantity', 'Price', 'Total'];
     const tableRows = order.items.map((item, index) => [
@@ -107,7 +112,7 @@ function OrdersPage() {
     doc.autoTable({
       head: [tableColumnHeaders],
       body: tableRows,
-      startY: 110,
+      startY: 120,
       theme: 'grid',
       styles: { font: 'times', fontSize: 10 },
       headStyles: { fillColor: [211, 211, 211], textColor: 0 },
@@ -145,7 +150,7 @@ function OrdersPage() {
     doc.text('Return and Refund Policy', 10, additionalY);
     doc.setFont('times', 'normal');
     doc.text(
-      'If you’re not satisfied with your purchase, you may return it within 30 days.',
+      'If you are not satisfied with your purchase, you may return it within 30 days.',
       10,
       additionalY + 10
     );
@@ -162,6 +167,11 @@ function OrdersPage() {
     doc.setFont('times', 'normal');
     doc.text('Use code THANKYOU20 for 20% off your next order.', 10, additionalY + 70);
     doc.text('Valid until: 12/31/2024', 10, additionalY + 75);
+
+    const timestamp = new Date().toLocaleString();
+    doc.setFont('times', 'italic');
+    doc.setFontSize(10);
+    doc.text(`Bill Generated: ${timestamp}`, 105, 290, null, null, 'center');
 
     doc.save(`Order_${order.id}.pdf`);
   };
