@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { getAuth } from 'firebase/auth';
 import { getDatabase, ref, set, remove, push, onValue } from 'firebase/database';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios'; // For fetching product details from MongoDB
+import axios from 'axios';
 
 function CheckoutPage() {
   const auth = getAuth();
@@ -18,9 +18,9 @@ function CheckoutPage() {
     email: '',
     phone: '',
     address: '',
+    province: '',
     city: '',
     postalCode: '',
-    country: '',
   });
   const [shippingAddress, setShippingAddress] = useState({
     firstName: '',
@@ -28,18 +28,22 @@ function CheckoutPage() {
     email: '',
     phone: '',
     address: '',
+    province: '',
     city: '',
     postalCode: '',
-    country: '',
   });
   const [useBillingAsShipping, setUseBillingAsShipping] = useState(false);
+  const [provinces, setProvinces] = useState([]);
+  const [cities, setCities] = useState([]);
   const [errorMessage, setErrorMessage] = useState('');
+
+  const [tax, setTax] = useState(0);
+  const [totalPrice, setTotalPrice] = useState(0);
 
   useEffect(() => {
     if (user) {
       setUserId(user.uid);
 
-      // Fetch cart items from Firebase
       const cartRef = ref(database, `carts/${user.uid}`);
       onValue(cartRef, async (snapshot) => {
         const data = snapshot.val();
@@ -49,33 +53,51 @@ function CheckoutPage() {
             ...data[key],
           }));
 
-          // Fetch product details from MongoDB for each item
-          const detailedItems = await Promise.all(
-            items.map(async (item) => {
-              try {
-                const response = await axios.get(`/api/products/${item.productId}`);
-                return {
-                  ...item,
-                  name: response.data.name,
-                  price: response.data.price,
-                  imageUrl: response.data.imageUrl,
-                };
-              } catch (error) {
-                console.error('Error fetching product details:', error);
-                return { ...item }; // Return the item without additional details if an error occurs
-              }
-            })
+          const total = items.reduce(
+            (sum, item) => sum + item.price * item.quantity,
+            0
           );
-
-          setCartItems(detailedItems);
+          const calculatedTax = total * 0.13;
+          setCartItems(items);
+          setTax(calculatedTax.toFixed(2));
+          setTotalPrice((total + calculatedTax).toFixed(2));
         } else {
           setCartItems([]);
+          setTax(0);
+          setTotalPrice(0);
         }
       });
     } else {
       setErrorMessage('User not logged in.');
     }
   }, [user, database]);
+
+  const fetchProvinces = async () => {
+    try {
+      const response = await axios.get('https://api.countrystatecity.in/v1/countries/CA/states', {
+        headers: { 'X-CSCAPI-KEY': 'NHhvOEcyWk50N2Vna3VFTE00bFp3MjFKR0ZEOUhkZlg4RTk1MlJlaA==' },
+      });
+      setProvinces(response.data);
+    } catch (error) {
+      console.error('Error fetching provinces:', error);
+    }
+  };
+
+  const fetchCities = async (provinceCode) => {
+    try {
+      const response = await axios.get(
+        `https://api.countrystatecity.in/v1/countries/CA/states/${provinceCode}/cities`,
+        { headers: { 'X-CSCAPI-KEY': 'NHhvOEcyWk50N2Vna3VFTE00bFp3MjFKR0ZEOUhkZlg4RTk1MlJlaA==' } }
+      );
+      setCities(response.data);
+    } catch (error) {
+      console.error('Error fetching cities:', error);
+    }
+  };
+
+  useEffect(() => {
+    fetchProvinces();
+  }, []);
 
   const handleInputChange = (e, setAddress) => {
     const { name, value } = e.target;
@@ -91,9 +113,9 @@ function CheckoutPage() {
       !billingAddress.email ||
       !billingAddress.phone ||
       !billingAddress.address ||
+      !billingAddress.province ||
       !billingAddress.city ||
-      !billingAddress.postalCode ||
-      !billingAddress.country
+      !billingAddress.postalCode
     ) {
       setErrorMessage('Please fill all billing address fields.');
       return;
@@ -106,9 +128,9 @@ function CheckoutPage() {
         !shippingAddress.email ||
         !shippingAddress.phone ||
         !shippingAddress.address ||
+        !shippingAddress.province ||
         !shippingAddress.city ||
-        !shippingAddress.postalCode ||
-        !shippingAddress.country)
+        !shippingAddress.postalCode)
     ) {
       setErrorMessage('Please fill all shipping address fields.');
       return;
@@ -124,19 +146,13 @@ function CheckoutPage() {
         const orderRef = ref(database, `orders/${userId}`);
         const newOrderRef = push(orderRef);
 
-        const totalPrice = cartItems.reduce(
-          (total, item) => total + item.price * item.quantity,
-          0
-        );
-        const tax = totalPrice * 0.13;
-
         await set(newOrderRef, {
           billingAddress,
           shippingAddress: useBillingAsShipping ? billingAddress : shippingAddress,
           orderDate: new Date().toISOString(),
           items: cartItems,
-          tax: tax.toFixed(2),
-          totalPrice: (totalPrice + tax).toFixed(2),
+          tax,
+          totalPrice,
         });
 
         const cartRef = ref(database, `carts/${userId}`);
@@ -154,190 +170,270 @@ function CheckoutPage() {
   return (
     <div className="container mt-5">
       <h2 className="text-center mb-4">Checkout</h2>
-      {errorMessage && <p className="text-danger">{errorMessage}</p>}
-      <form onSubmit={handleSubmit}>
-        <h3>Billing Address</h3>
-        <div className="form-group mb-3">
-          <label>First Name</label>
-          <input
-            type="text"
-            className="form-control"
-            name="firstName"
-            value={billingAddress.firstName}
-            onChange={(e) => handleInputChange(e, setBillingAddress)}
-          />
-        </div>
-        <div className="form-group mb-3">
-          <label>Last Name</label>
-          <input
-            type="text"
-            className="form-control"
-            name="lastName"
-            value={billingAddress.lastName}
-            onChange={(e) => handleInputChange(e, setBillingAddress)}
-          />
-        </div>
-        <div className="form-group mb-3">
-          <label>Email</label>
-          <input
-            type="email"
-            className="form-control"
-            name="email"
-            value={billingAddress.email}
-            onChange={(e) => handleInputChange(e, setBillingAddress)}
-          />
-        </div>
-        <div className="form-group mb-3">
-          <label>Phone</label>
-          <input
-            type="text"
-            className="form-control"
-            name="phone"
-            value={billingAddress.phone}
-            onChange={(e) => handleInputChange(e, setBillingAddress)}
-          />
-        </div>
-        <div className="form-group mb-3">
-          <label>Address</label>
-          <input
-            type="text"
-            className="form-control"
-            name="address"
-            value={billingAddress.address}
-            onChange={(e) => handleInputChange(e, setBillingAddress)}
-          />
-        </div>
-        <div className="form-group mb-3">
-          <label>City</label>
-          <input
-            type="text"
-            className="form-control"
-            name="city"
-            value={billingAddress.city}
-            onChange={(e) => handleInputChange(e, setBillingAddress)}
-          />
-        </div>
-        <div className="form-group mb-3">
-          <label>Postal Code</label>
-          <input
-            type="text"
-            className="form-control"
-            name="postalCode"
-            value={billingAddress.postalCode}
-            onChange={(e) => handleInputChange(e, setBillingAddress)}
-          />
-        </div>
-        <div className="form-group mb-3">
-          <label>Country</label>
-          <input
-            type="text"
-            className="form-control"
-            name="country"
-            value={billingAddress.country}
-            onChange={(e) => handleInputChange(e, setBillingAddress)}
-          />
-        </div>
-        <div className="form-check mb-4">
-          <input
-            type="checkbox"
-            className="form-check-input"
-            id="useBillingAsShipping"
-            checked={useBillingAsShipping}
-            onChange={(e) => setUseBillingAsShipping(e.target.checked)}
-          />
-          <label className="form-check-label" htmlFor="useBillingAsShipping">
-            Shipping address is the same as billing address
-          </label>
-        </div>
-        {!useBillingAsShipping && (
-          <>
-            <h3>Shipping Address</h3>
-            <div className="form-group mb-3">
-              <label>First Name</label>
-              <input
-                type="text"
-                className="form-control"
-                name="firstName"
-                value={shippingAddress.firstName}
-                onChange={(e) => handleInputChange(e, setShippingAddress)}
-              />
+      <div className="row">
+        <div className="col-md-8">
+          {errorMessage && <p className="text-danger">{errorMessage}</p>}
+          <form onSubmit={handleSubmit}>
+            <div className="row">
+              <div className="col-md-6">
+                <h3>Billing Address</h3>
+                <div className="form-group mb-3">
+                  <label>First Name</label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    name="firstName"
+                    value={billingAddress.firstName}
+                    onChange={(e) => handleInputChange(e, setBillingAddress)}
+                  />
+                </div>
+                <div className="form-group mb-3">
+                  <label>Last Name</label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    name="lastName"
+                    value={billingAddress.lastName}
+                    onChange={(e) => handleInputChange(e, setBillingAddress)}
+                  />
+                </div>
+                <div className="form-group mb-3">
+                  <label>Email</label>
+                  <input
+                    type="email"
+                    className="form-control"
+                    name="email"
+                    value={billingAddress.email}
+                    onChange={(e) => handleInputChange(e, setBillingAddress)}
+                  />
+                </div>
+                <div className="form-group mb-3">
+                  <label>Phone</label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    name="phone"
+                    value={billingAddress.phone}
+                    onChange={(e) => handleInputChange(e, setBillingAddress)}
+                  />
+                </div>
+                <div className="form-group mb-3">
+                  <label>Address</label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    name="address"
+                    value={billingAddress.address}
+                    onChange={(e) => handleInputChange(e, setBillingAddress)}
+                  />
+                </div>
+                <div className="form-group mb-3">
+                  <label>Province</label>
+                  <select
+                    className="form-control"
+                    name="province"
+                    value={billingAddress.province}
+                    onChange={(e) => {
+                      handleInputChange(e, setBillingAddress);
+                      fetchCities(e.target.value);
+                    }}
+                  >
+                    <option value="">Select a Province</option>
+                    {provinces.map((province) => (
+                      <option key={province.iso2} value={province.iso2}>
+                        {province.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <div className="form-group mb-3">
+                  <label>City</label>
+                  <select
+                    className="form-control"
+                    name="city"
+                    value={billingAddress.city}
+                    onChange={(e) => handleInputChange(e, setBillingAddress)}
+                  >
+                    <option value="">Select a City</option>
+                    {cities.map((city) => (
+                      <option key={city.id} value={city.name}>
+                        {city.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <div className="form-group mb-3">
+                  <label>Postal Code</label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    name="postalCode"
+                    value={billingAddress.postalCode}
+                    onChange={(e) => handleInputChange(e, setBillingAddress)}
+                  />
+                </div>
+                <div className="form-check mb-4">
+                  <input
+                    type="checkbox"
+                    className="form-check-input"
+                    id="useBillingAsShipping"
+                    checked={useBillingAsShipping}
+                    onChange={(e) => setUseBillingAsShipping(e.target.checked)}
+                  />
+                  <label className="form-check-label" htmlFor="useBillingAsShipping">
+                    Same as Billing Address
+                  </label>
+                </div>
+              </div>
+              <div className="col-md-6">
+                <h3>Shipping Address</h3>
+                <div className="form-group mb-3">
+                  <label>First Name</label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    name="firstName"
+                    value={shippingAddress.firstName}
+                    onChange={(e) => handleInputChange(e, setShippingAddress)}
+                    disabled={useBillingAsShipping}
+                  />
+                </div>
+                <div className="form-group mb-3">
+                  <label>Last Name</label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    name="lastName"
+                    value={shippingAddress.lastName}
+                    onChange={(e) => handleInputChange(e, setShippingAddress)}
+                    disabled={useBillingAsShipping}
+                  />
+                </div>
+                <div className="form-group mb-3">
+                  <label>Email</label>
+                  <input
+                    type="email"
+                    className="form-control"
+                    name="email"
+                    value={shippingAddress.email}
+                    onChange={(e) => handleInputChange(e, setShippingAddress)}
+                    disabled={useBillingAsShipping}
+                  />
+                </div>
+                <div className="form-group mb-3">
+                  <label>Phone</label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    name="phone"
+                    value={shippingAddress.phone}
+                    onChange={(e) => handleInputChange(e, setShippingAddress)}
+                    disabled={useBillingAsShipping}
+                  />
+                </div>
+                <div className="form-group mb-3">
+                  <label>Address</label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    name="address"
+                    value={shippingAddress.address}
+                    onChange={(e) => handleInputChange(e, setShippingAddress)}
+                    disabled={useBillingAsShipping}
+                  />
+                </div>
+                <div className="form-group mb-3">
+                  <label>Province</label>
+                  <select
+                    className="form-control"
+                    name="province"
+                    value={shippingAddress.province}
+                    onChange={(e) => {
+                      handleInputChange(e, setShippingAddress);
+                      fetchCities(e.target.value);
+                    }}
+                    disabled={useBillingAsShipping}
+                  >
+                    <option value="">Select a Province</option>
+                    {provinces.map((province) => (
+                      <option key={province.iso2} value={province.iso2}>
+                        {province.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <div className="form-group mb-3">
+                  <label>City</label>
+                  <select
+                    className="form-control"
+                    name="city"
+                    value={shippingAddress.city}
+                    onChange={(e) => handleInputChange(e, setShippingAddress)}
+                    disabled={useBillingAsShipping}
+                  >
+                    <option value="">Select a City</option>
+                    {cities.map((city) => (
+                      <option key={city.id} value={city.name}>
+                        {city.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <div className="form-group mb-3">
+                  <label>Postal Code</label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    name="postalCode"
+                    value={shippingAddress.postalCode}
+                    onChange={(e) => handleInputChange(e, setShippingAddress)}
+                    disabled={useBillingAsShipping}
+                  />
+                </div>
+              </div>
             </div>
-            <div className="form-group mb-3">
-              <label>Last Name</label>
-              <input
-                type="text"
-                className="form-control"
-                name="lastName"
-                value={shippingAddress.lastName}
-                onChange={(e) => handleInputChange(e, setShippingAddress)}
-              />
-            </div>
-            <div className="form-group mb-3">
-              <label>Email</label>
-              <input
-                type="email"
-                className="form-control"
-                name="email"
-                value={shippingAddress.email}
-                onChange={(e) => handleInputChange(e, setShippingAddress)}
-              />
-            </div>
-            <div className="form-group mb-3">
-              <label>Phone</label>
-              <input
-                type="text"
-                className="form-control"
-                name="phone"
-                value={shippingAddress.phone}
-                onChange={(e) => handleInputChange(e, setShippingAddress)}
-              />
-            </div>
-            <div className="form-group mb-3">
-              <label>Address</label>
-              <input
-                type="text"
-                className="form-control"
-                name="address"
-                value={shippingAddress.address}
-                onChange={(e) => handleInputChange(e, setShippingAddress)}
-              />
-            </div>
-            <div className="form-group mb-3">
-              <label>City</label>
-              <input
-                type="text"
-                className="form-control"
-                name="city"
-                value={shippingAddress.city}
-                onChange={(e) => handleInputChange(e, setShippingAddress)}
-              />
-            </div>
-            <div className="form-group mb-3">
-              <label>Postal Code</label>
-              <input
-                type="text"
-                className="form-control"
-                name="postalCode"
-                value={shippingAddress.postalCode}
-                onChange={(e) => handleInputChange(e, setShippingAddress)}
-              />
-            </div>
-            <div className="form-group mb-3">
-              <label>Country</label>
-              <input
-                type="text"
-                className="form-control"
-                name="country"
-                value={shippingAddress.country}
-                onChange={(e) => handleInputChange(e, setShippingAddress)}
-              />
-            </div>
-          </>
-        )}
-        <button type="submit" className="btn btn-primary w-100 mt-4">
-          Complete Checkout
-        </button>
-      </form>
+            <button type="submit" className="btn btn-primary w-100 mt-4">
+              Complete Checkout
+            </button>
+          </form>
+        </div>
+        <div className="col-md-4">
+          <div
+            className="order-details p-3"
+            style={{ backgroundColor: '#f8f9fa', border: '1px solid #ddd', borderRadius: '5px' }}
+          >
+            <h4 className="mb-3">Order Details</h4>
+            <table className="table">
+              <thead>
+                <tr>
+                  <th>Item</th>
+                  <th>Qty</th>
+                  <th>Price</th>
+                </tr>
+              </thead>
+              <tbody>
+                {cartItems.map((item) => (
+                  <tr key={item.id}>
+                    <td>{item.name}</td>
+                    <td>{item.quantity}</td>
+                    <td>${(item.price * item.quantity).toFixed(2)}</td>
+                  </tr>
+                ))}
+              </tbody>
+              <tfoot>
+                <tr>
+                  <td colSpan="2">Tax</td>
+                  <td>${tax}</td>
+                </tr>
+                <tr>
+                  <td colSpan="2">Total</td>
+                  <td>${totalPrice}</td>
+                </tr>
+              </tfoot>
+            </table>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
