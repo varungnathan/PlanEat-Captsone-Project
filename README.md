@@ -1,4 +1,4 @@
-# PlanEat-Capstone-Project
+# PlanEat - Captone Project - Semester 4 - Web Development
 PlanEat is your one-stop platform for meal planning, recipe discovery, and managing your ready-to-cook meals. Empowering users to plan healthy, organized, and delicious meals for themselves and their families.
 
 ## Team Members
