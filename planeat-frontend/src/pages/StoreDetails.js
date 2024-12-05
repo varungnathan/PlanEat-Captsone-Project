@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import { getDatabase, ref, set } from 'firebase/database';
+import { getDatabase, ref, onValue, set, update } from 'firebase/database';
 import { getAuth } from 'firebase/auth';
 import '../pagestyles/StoreDetails.css';
 
@@ -46,12 +46,23 @@ function StoreDetails() {
 
     try {
       const cartRef = ref(database, `carts/${user.uid}/${product._id}`);
-      await set(cartRef, {
-        name: product.name,
-        price: product.price,
-        quantity,
-        imageUrl: product.imageUrl,
-      });
+      onValue(
+        cartRef,
+        (snapshot) => {
+          if (snapshot.exists()) {
+            const existingData = snapshot.val();
+            update(cartRef, { quantity: existingData.quantity + quantity });
+          } else {
+            set(cartRef, {
+              name: product.name,
+              price: product.price,
+              quantity,
+              imageUrl: product.imageUrl,
+            });
+          }
+        },
+        { onlyOnce: true }
+      );
       alert('Added to cart successfully!');
     } catch (error) {
       console.error('Error adding to cart:', error);
@@ -125,7 +136,6 @@ function StoreDetails() {
               {product.type}
             </span>
           </div>
-
           <div className="quantity-selector d-flex align-items-center mb-3 mt-4">
             <button
               className="btn btn-secondary"
@@ -145,18 +155,15 @@ function StoreDetails() {
           <button className="btn btn-success mb-4" onClick={handleAddToCart}>
             Add to Cart
           </button>
-
           <div className="product-details mt-4">
             <h3>About the Product</h3>
             <p>{product.longDescription || product.shortDescription}</p>
-
             {product.history && (
               <div className="mt-4">
                 <h4>History</h4>
                 <p>{product.history}</p>
               </div>
             )}
-
             {product.purchaseInfo && (
               <div className="mt-4">
                 <h4>Purchase Information</h4>
@@ -180,14 +187,12 @@ function StoreDetails() {
                 </div>
               </div>
             )}
-
             {product.giftOptions && (
               <div className="mt-4">
                 <h4>Gift Options</h4>
                 <p>{product.giftOptions}</p>
               </div>
             )}
-
             {product.technicalDetails && (
               <div className="mt-4">
                 <h4>Technical Details</h4>
@@ -197,7 +202,6 @@ function StoreDetails() {
           </div>
         </div>
       </div>
-
       <div className="recommendations mt-5">
         <h3>Recommended Products</h3>
         <div className="row">
@@ -221,7 +225,6 @@ function StoreDetails() {
           ))}
         </div>
       </div>
-
       {loginModal && (
         <div className="modal show" style={{ display: 'block' }}>
           <div className="modal-dialog">
