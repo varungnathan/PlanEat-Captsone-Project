@@ -1,3 +1,5 @@
+// planeat-frontend\src\pages\SignupPage.js
+
 import React, { useState } from 'react';
 import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth';
 import { useNavigate, Link } from 'react-router-dom';

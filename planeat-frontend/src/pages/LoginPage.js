@@ -1,3 +1,5 @@
+// planeat-frontend\src\pages\LoginPage.js
+
 import React, { useState, useEffect } from 'react';
 import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
 import { useNavigate, Link } from 'react-router-dom';

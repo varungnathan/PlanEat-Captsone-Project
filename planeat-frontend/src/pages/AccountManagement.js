@@ -1,3 +1,5 @@
+// planeat-frontend\src\pages\AccountManagement.js
+
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { getAuth } from 'firebase/auth';

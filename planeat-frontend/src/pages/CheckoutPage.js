@@ -1,3 +1,5 @@
+// planeat-frontend\src\pages\CheckoutPage.js
+
 import React, { useState, useEffect } from 'react';
 import { getAuth } from 'firebase/auth';
 import { getDatabase, ref, set, remove, push, onValue } from 'firebase/database';

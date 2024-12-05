@@ -1,3 +1,5 @@
+// planeat-frontend\src\pages\Cart.js
+
 import React, { useEffect, useState } from 'react';
 import { getAuth } from 'firebase/auth';
 import { getDatabase, ref, onValue, set, update, remove } from 'firebase/database';
