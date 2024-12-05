@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { getAuth } from 'firebase/auth';
-import { getStorage, ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
+import { getDatabase, ref, onValue } from 'firebase/database';
+import { getStorage, ref as storageRef, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
 import { Link } from 'react-router-dom';
 
 function AccountManagement() {
   const auth = getAuth();
+  const database = getDatabase();
   const storage = getStorage();
   const user = auth.currentUser;
 
@@ -25,24 +27,61 @@ function AccountManagement() {
   const [isSavedDropdownOpen, setIsSavedDropdownOpen] = useState(false);
   const [isFavoritesDropdownOpen, setIsFavoritesDropdownOpen] = useState(false);
 
+  const [tier, setTier] = useState('Bronze');
+  const [tierImage, setTierImage] = useState(
+    'https://firebasestorage.googleapis.com/v0/b/planeatscapstone.appspot.com/o/other%2FBronze.png?alt=media&token=8a20691b-4e58-4b8c-aa75-cf519115299c'
+  );
+
   useEffect(() => {
-    const fetchUserDetails = async () => {
+    const fetchUserDetailsAndOrders = async () => {
       if (!user) {
         setErrorMessage('User is not logged in.');
         return;
       }
 
       try {
-        const response = await axios.get(`http://localhost:5000/api/users/details/${user.uid}`);
+        const userDetailsResponse = await axios.get(`http://localhost:5000/api/users/details/${user.uid}`);
         setFormData({
-          name: response.data.name,
-          email: response.data.email,
-          phone: response.data.phone || '',
-          address: response.data.address || '',
-          profileImageUrl: response.data.profileImageUrl || '',
+          name: userDetailsResponse.data.name,
+          email: userDetailsResponse.data.email,
+          phone: userDetailsResponse.data.phone || '',
+          address: userDetailsResponse.data.address || '',
+          profileImageUrl: userDetailsResponse.data.profileImageUrl || '',
+        });
+
+        const ordersRef = ref(database, `orders/${user.uid}`);
+        let totalItems = 0;
+
+        onValue(ordersRef, (snapshot) => {
+          if (snapshot.exists()) {
+            const orders = snapshot.val();
+            Object.values(orders).forEach((order) => {
+              order.items.forEach((item) => {
+                totalItems += item.quantity;
+              });
+            });
+
+            let badge = 'Bronze';
+            let badgeImage =
+              'https://firebasestorage.googleapis.com/v0/b/planeatscapstone.appspot.com/o/other%2FBronze.png?alt=media&token=8a20691b-4e58-4b8c-aa75-cf519115299c';
+
+            if (totalItems > 10) {
+              badge = 'Silver';
+              badgeImage =
+                'https://firebasestorage.googleapis.com/v0/b/planeatscapstone.appspot.com/o/other%2FSilver.png?alt=media&token=11575893-e074-4dcb-8b60-f16e198249bd';
+            }
+            if (totalItems > 20) {
+              badge = 'Gold';
+              badgeImage =
+                'https://firebasestorage.googleapis.com/v0/b/planeatscapstone.appspot.com/o/other%2FGold.png?alt=media&token=eb4af040-9c81-4c89-bb52-213c3b3e5f03';
+            }
+
+            setTier(badge);
+            setTierImage(badgeImage);
+          }
         });
       } catch (error) {
-        setErrorMessage('Failed to load account details.');
+        setErrorMessage('Failed to load account details or orders.');
       }
     };
 
@@ -68,10 +107,10 @@ function AccountManagement() {
       }
     };
 
-    fetchUserDetails();
+    fetchUserDetailsAndOrders();
     fetchSavedRecipes();
     fetchFavoriteRecipes();
-  }, [user]);
+  }, [user, database]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -93,8 +132,8 @@ function AccountManagement() {
     }
 
     try {
-      const storageRef = ref(storage, `profileimage/${user.uid}/${profileImage.name}`);
-      const uploadTask = uploadBytesResumable(storageRef, profileImage);
+      const uploadRef = storageRef(storage, `profileimage/${user.uid}/${profileImage.name}`);
+      const uploadTask = uploadBytesResumable(uploadRef, profileImage);
 
       uploadTask.on(
         'state_changed',
@@ -103,7 +142,6 @@ function AccountManagement() {
           setUploadProgress(progress);
         },
         (error) => {
-          console.error("Upload error:", error.message);
           setErrorMessage(`Failed to upload: ${error.message}`);
         },
         async () => {
@@ -116,13 +154,11 @@ function AccountManagement() {
             });
             setSuccessMessage('Profile image uploaded and updated successfully!');
           } catch (error) {
-            console.error("Error updating profile image URL in MongoDB:", error.message);
             setErrorMessage('Failed to update profile image URL in the database.');
           }
         }
       );
     } catch (error) {
-      console.error("Error initializing upload:", error.message);
       setErrorMessage('An error occurred while uploading the image.');
     }
   };
@@ -155,6 +191,23 @@ function AccountManagement() {
 
   return (
     <div className="container mt-5">
+      <div
+        className="membership-tag"
+        style={{
+          position: 'absolute',
+          top: '70px',
+          right: '20px',
+          background: '#fff',
+          padding: '10px',
+          borderRadius: '8px',
+          display: 'flex',
+          alignItems: 'center',
+          boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
+        }}
+      >
+        <img src={tierImage} alt={`${tier} Badge`} style={{ width: '40px', marginRight: '10px' }} />
+        <span style={{ fontWeight: 'bold', fontSize: '16px' }}>{tier} Member</span>
+      </div>
       <h2 className="text-center mb-4">Account Management</h2>
       {successMessage && <p className="text-success">{successMessage}</p>}
       {errorMessage && <p className="text-danger">{errorMessage}</p>}
@@ -248,7 +301,13 @@ function AccountManagement() {
                 onChange={handleInputChange}
               />
             </div>
-            <button type="submit" className="btn btn-primary w-100">Update</button>
+            <button
+              type="submit"
+              className="btn"
+              style={{ backgroundColor: '#734F96', color: 'white', width: '100%' }}
+            >
+              Update
+            </button>
           </form>
         </div>
       </div>
