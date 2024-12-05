@@ -1,3 +1,5 @@
+// planeat-backend\controllers\mealPlanController.js
+
 const mongoose = require('mongoose');
 const MealPlan = require('../models/MealPlan');
 

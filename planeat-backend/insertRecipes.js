@@ -1,3 +1,5 @@
+// planeat-backend\insertRecipes.js
+
 const mongoose = require('mongoose');
 const Recipe = require('./models/Recipe'); // Corrected the path to the Recipe model
 

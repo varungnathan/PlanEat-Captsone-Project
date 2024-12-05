@@ -1,3 +1,5 @@
+// planeat-backend\models\MealPlan.js
+
 const mongoose = require('mongoose');
 
 const mealPlanSchema = new mongoose.Schema({

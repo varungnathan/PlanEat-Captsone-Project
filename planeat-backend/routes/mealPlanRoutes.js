@@ -1,3 +1,5 @@
+// planeat-backend\routes\mealPlanRoutes.js
+
 const express = require('express');
 const { createMealPlan, getMealPlans, updateMealPlan, deleteMealPlan } = require('../controllers/mealPlanController');
 

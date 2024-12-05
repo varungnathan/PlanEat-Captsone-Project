@@ -1,3 +1,5 @@
+// planeat-backend\migrations\migration.js
+
 const mongoose = require('mongoose');
 const Cart = require('../models/Cart'); // Corrected path for Cart model
 const User = require('../models/User'); // Corrected path for User model

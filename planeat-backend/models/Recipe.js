@@ -1,3 +1,5 @@
+// planeat-backend\models\Recipe.js
+
 const mongoose = require('mongoose');
  
 const reviewSchema = new mongoose.Schema({

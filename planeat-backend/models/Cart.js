@@ -1,3 +1,5 @@
+// planeat-backend\models\Cart.js
+
 const mongoose = require('mongoose');
 
 const cartSchema = new mongoose.Schema({
