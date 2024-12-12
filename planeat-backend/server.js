@@ -8,7 +8,8 @@ const recipeRoutes = require('./routes/recipeRoutes');
 const productRoutes = require('./routes/productRoutes');
 const cartRoutes = require('./routes/cartRoutes');
 const mealPlanRoutes = require('./routes/mealPlanRoutes');
-const familyMealPlanRoutes = require('./routes/familyMealPlanRoutes'); // Added Family Meal Plan Routes
+const familyMealPlanRoutes = require('./routes/familyMealPlanRoutes');
+const seasonalRecipesRoutes = require('./routes/seasonalRecipes');
 const cors = require('cors');
 
 dotenv.config();
@@ -28,7 +29,8 @@ app.use('/api/recipes', recipeRoutes);
 app.use('/api/products', productRoutes);
 app.use('/api/cart', cartRoutes);
 app.use('/api/meal-plans', mealPlanRoutes);
-app.use('/api/family-meal-plans', familyMealPlanRoutes); // Registered Family Meal Plan Routes
+app.use('/api/family-meal-plans', familyMealPlanRoutes);
+app.use('/api/seasonal-recipes', seasonalRecipesRoutes);
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {

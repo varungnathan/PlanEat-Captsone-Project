@@ -57,6 +57,11 @@ function Navbar({ isAuthenticated, handleLogout }) {
               </Link>
             </li>
             <li className="nav-item">
+              <Link className="nav-link nav-text" to="/seasonal-recipes">
+                Seasonal Recipes
+              </Link>
+            </li>
+            <li className="nav-item">
               <Link className="nav-link nav-text" to="/store">
                 Store
               </Link>
