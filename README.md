@@ -43,17 +43,16 @@ PlanEat is your one-stop platform for meal planning, recipe discovery, and manag
 - [x] Order to PDF
 - [x] Family Meal Planning
 - [x] Google Calendar Integration
+- [x] Recipe Nutritional List
+- [x] Offline Access to Recipes
 
 ### Tasks In Progress
 - [ ] API For Generating Shopping List
-- [ ] Recipe Nutritional List
-- [ ] Dietary Preference & Allergens
-- [ ] User Generated Content Moderation
 
 ### Future Tasks
 - [ ] Weekly Meal Inspiration Emails
 - [ ] Recipe Collaboration & Comments
-- [ ] Offline Access to Recipes
+
 - [ ] Pantry Inventory Management
 - [ ] Ingredient Scanner
 - [ ] Recipe Step-by-Step Mode

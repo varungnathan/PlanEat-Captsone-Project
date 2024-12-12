@@ -5,7 +5,10 @@ import { useParams, Link } from 'react-router-dom';
 import axios from 'axios';
 import { getAuth } from 'firebase/auth';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
+import jsPDF from 'jspdf';
+import 'jspdf-autotable';
 import '../pagestyles/RecipeDetailsPage.css';
+import logo from '../pagestyles/pdflogo.png';
 
 function RecipeDetailsPage() {
   const { id } = useParams();
@@ -91,6 +94,44 @@ function RecipeDetailsPage() {
     setShowCommentBox(true);
   };
 
+  const downloadPDF = async () => {
+    try {
+      const doc = new jsPDF();
+      const imgWidth = 40;
+      const imgHeight = 15;
+      const imgX = (210 - imgWidth) / 2;
+      const imgY = 10;
+
+      doc.addImage(logo, 'PNG', imgX, imgY, imgWidth, imgHeight);
+      doc.setFont('times', 'normal');
+      doc.setFontSize(12);
+      doc.text('299 Doon Valley Dr, Kitchener, ON CA, N2G 4M4', 105, 30, null, null, 'center');
+      doc.text('Phone: +1 2268999660', 105, 35, null, null, 'center');
+      doc.text('E-Mail: innovators@conestogac.on.ca', 105, 40, null, null, 'center');
+      doc.setFont('times', 'bold');
+      doc.setFontSize(14);
+      doc.text('Recipe Details', 10, 50);
+
+      if (recipe) {
+        doc.setFont('times', 'normal');
+        doc.setFontSize(12);
+        doc.text(`Title: ${recipe.title}`, 10, 60);
+        doc.text(`Description: ${recipe.description}`, 10, 70);
+        doc.text('Ingredients:', 10, 80);
+        recipe.ingredients.forEach((ingredient, index) => {
+          doc.text(`- ${ingredient}`, 15, 90 + index * 10);
+        });
+        doc.text('Instructions:', 10, 110 + recipe.ingredients.length * 10);
+        doc.text(recipe.instructions, 15, 120 + recipe.ingredients.length * 10);
+      }
+
+      doc.save(`${recipe?.title || 'Recipe'}.pdf`);
+    } catch (error) {
+      console.error('Error generating PDF:', error);
+      alert('Error generating PDF. Please try again.');
+    }
+  };
+
   if (!recipe) return <div>Loading...</div>;
 
   return (
@@ -126,6 +167,9 @@ function RecipeDetailsPage() {
                 {copied ? 'Link Copied!' : 'Share Recipe'}
               </button>
             </CopyToClipboard>
+            <button className="btn btn-success ms-3" onClick={downloadPDF}>
+              Download PDF
+            </button>
           </div>
         </div>
       </div>
