@@ -45,6 +45,7 @@ PlanEat is your one-stop platform for meal planning, recipe discovery, and manag
 - [x] Google Calendar Integration
 - [x] Recipe Nutritional List
 - [x] Offline Access to Recipes
+- [x] Seasonal Recipe Recommendations
 
 ### Tasks In Progress
 - [ ] API For Generating Shopping List
@@ -56,7 +57,6 @@ PlanEat is your one-stop platform for meal planning, recipe discovery, and manag
 - [ ] Pantry Inventory Management
 - [ ] Ingredient Scanner
 - [ ] Recipe Step-by-Step Mode
-- [ ] Seasonal Recipe Recommendations
 - [ ] Ingredient Substitution Suggestions
 - [ ] Collaborative Meal Planning
 - [ ] Smart Shopping List

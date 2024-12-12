@@ -21,6 +21,7 @@ import MealPlannerPage from './pages/MealPlannerPage';
 import FamilyMealPlannerPage from './pages/FamilyMealPlannerPage';
 import OrdersPage from './pages/OrdersPage';
 import SeasonalRecipesPage from './pages/SeasonalRecipesPage';
+import SeasonalRecipeDetailsPage from './pages/SeasonalRecipeDetailsPage';
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -59,6 +60,7 @@ function App() {
             <Route path="/recipes" element={<RecipeListPage />} />
             <Route path="/recipes/:id" element={<RecipeDetailsPage />} />
             <Route path="/seasonal-recipes" element={<SeasonalRecipesPage />} />
+            <Route path="/seasonal-recipes/:id" element={<SeasonalRecipeDetailsPage />} />
             <Route path="/store" element={<StorePage />} />
             <Route path="/store/:id" element={<StoreDetails />} />
             <Route path="/account" element={<AccountManagement />} />
