@@ -9,6 +9,7 @@ import '../App.css';
 function Navbar({ isAuthenticated, handleLogout }) {
   const [isOpen, setIsOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [pantryDropdownOpen, setPantryDropdownOpen] = useState(false); // Pantry dropdown state
   const navigate = useNavigate();
 
   const toggleMenu = () => {
@@ -17,6 +18,10 @@ function Navbar({ isAuthenticated, handleLogout }) {
 
   const toggleDropdown = () => {
     setDropdownOpen(!dropdownOpen);
+  };
+
+  const togglePantryDropdown = () => {
+    setPantryDropdownOpen(!pantryDropdownOpen);
   };
 
   const handleLogoutAndRedirect = () => {
@@ -77,6 +82,32 @@ function Navbar({ isAuthenticated, handleLogout }) {
                   <Link className="nav-link nav-text" to="/family-meal-planner">
                     Family Meal Planner
                   </Link>
+                </li>
+                {/* Pantry Dropdown */}
+                <li className="nav-item dropdown">
+                  <span
+                    className="nav-link dropdown-toggle nav-text"
+                    style={{ cursor: 'pointer' }}
+                    onClick={togglePantryDropdown}
+                  >
+                    Pantry
+                  </span>
+                  <ul
+                    className={`dropdown-menu ${pantryDropdownOpen ? 'show' : ''}`}
+                    style={{
+                      right: 0,
+                      padding: '10px',
+                      minWidth: '150px',
+                      textAlign: 'left',
+                      boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+                    }}
+                  >
+                    <li>
+                      <Link className="dropdown-item" to="/pantry">
+                        View Pantry
+                      </Link>
+                    </li>
+                  </ul>
                 </li>
               </>
             )}

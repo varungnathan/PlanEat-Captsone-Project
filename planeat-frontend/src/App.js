@@ -22,16 +22,21 @@ import FamilyMealPlannerPage from './pages/FamilyMealPlannerPage';
 import OrdersPage from './pages/OrdersPage';
 import SeasonalRecipesPage from './pages/SeasonalRecipesPage';
 import SeasonalRecipeDetailsPage from './pages/SeasonalRecipeDetailsPage';
+import PantryPage from './pages/PantryPage';
+import AddPantryItemPage from './pages/AddPantryItemPage';
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [userId, setUserId] = useState(null);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
         setIsAuthenticated(true);
+        setUserId(user.uid);
       } else {
         setIsAuthenticated(false);
+        setUserId(null);
       }
     });
 
@@ -42,6 +47,7 @@ function App() {
     try {
       await signOut(auth);
       setIsAuthenticated(false);
+      setUserId(null);
     } catch (error) {
       console.error('Error logging out:', error);
     }
@@ -69,6 +75,8 @@ function App() {
             <Route path="/meal-planner" element={<MealPlannerPage />} />
             <Route path="/family-meal-planner" element={<FamilyMealPlannerPage />} />
             <Route path="/orders" element={<OrdersPage />} />
+            <Route path="/pantry" element={<PantryPage userId={userId} />} />
+            <Route path="/pantry/add" element={<AddPantryItemPage userId={userId} />} />
           </Routes>
         </div>
         <Footer />

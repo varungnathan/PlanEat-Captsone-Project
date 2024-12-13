@@ -9,23 +9,12 @@ function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
-  const [userDetails, setUserDetails] = useState(null); // For storing user details
   const navigate = useNavigate();
   const auth = getAuth();
 
   const validateEmail = (email) => {
     const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
     return emailRegex.test(email);
-  };
-
-  const fetchUserDetails = async (email) => {
-    try {
-      const response = await axios.get(`http://localhost:5000/api/users/details/${email}`);
-      setUserDetails(response.data);
-      console.log('Fetched User Details:', response.data);
-    } catch (error) {
-      console.error('Error fetching user details:', error);
-    }
   };
 
   const handleLogin = async (e) => {
@@ -36,20 +25,14 @@ function LoginPage() {
     }
 
     try {
-      await signInWithEmailAndPassword(auth, email, password);
-      await fetchUserDetails(email); // Fetch additional user details
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      const userId = userCredential.user.uid;
+      localStorage.setItem('userId', userId); // Save userId to local storage
       navigate('/'); // Redirect to homepage
     } catch (error) {
       setError(error.message);
     }
   };
-
-  useEffect(() => {
-    if (userDetails) {
-      console.log('User Details loaded in state:', userDetails);
-      // Perform any post-login actions with user details, if needed
-    }
-  }, [userDetails]);
 
   return (
     <div className="container mt-5">
@@ -80,11 +63,9 @@ function LoginPage() {
             <button type="submit" className="btn btn-primary w-100 mt-4">Login</button>
             {error && <p className="text-danger mt-3">{error}</p>}
           </form>
-
           <p className="text-center mt-4">
             Forgot your password? <Link to="/reset-password">Reset it</Link>
           </p>
-
           <p className="text-center mt-4">
             Not a user? <Link to="/signup">Sign up</Link>
           </p>
