@@ -1,5 +1,3 @@
-// planeat-backend\server.js
-
 const express = require('express');
 const dotenv = require('dotenv');
 const connectDB = require('./config/db');
@@ -18,10 +16,10 @@ connectDB();
 
 const app = express();
 
-// CORS Configuration
+// Updated CORS Configuration
 const allowedOrigins = [
   'http://localhost:3000', // Local development
-  'https://675bede86d6637000868d851--planeat-capstone.netlify.app', // Deployed Netlify URL
+  'https://planeat-capstone.netlify.app', // Deployed Netlify production domain
 ];
 
 app.use(
@@ -30,10 +28,13 @@ app.use(
       if (!origin || allowedOrigins.includes(origin)) {
         callback(null, true);
       } else {
+        console.error(`Blocked by CORS: ${origin}`);
         callback(new Error('Not allowed by CORS'));
       }
     },
     credentials: true, // Allows cookies or other credentials
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], // Allowed HTTP methods
+    allowedHeaders: ['Content-Type', 'Authorization'], // Allowed headers
   })
 );
 
@@ -48,6 +49,9 @@ app.use('/api/meal-plans', mealPlanRoutes);
 app.use('/api/family-meal-plans', familyMealPlanRoutes);
 app.use('/api/seasonal-recipes', seasonalRecipesRoutes);
 app.use('/api/pantry', pantryRoutes);
+
+// Handle OPTIONS preflight requests
+app.options('*', cors());
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
