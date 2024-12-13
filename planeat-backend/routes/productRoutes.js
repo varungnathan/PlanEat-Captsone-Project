@@ -1,5 +1,3 @@
-// planeat-backend\routes\productRoutes.js
-
 const express = require('express');
 const Product = require('../models/Product');
 const router = express.Router();
@@ -10,6 +8,16 @@ router.get('/', async (req, res) => {
     res.json(products);
   } catch (error) {
     res.status(500).json({ message: 'Error fetching products' });
+  }
+});
+
+// Fetch Featured Products
+router.get('/featured', async (req, res) => {
+  try {
+    const featuredProducts = await Product.find().limit(2); // Limit to 2 products
+    res.status(200).json(featuredProducts);
+  } catch (error) {
+    res.status(500).json({ message: 'Error fetching featured products', error });
   }
 });
 

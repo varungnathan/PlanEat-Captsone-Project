@@ -1,5 +1,3 @@
-// planeat-backend\routes\seasonalRecipes.js
-
 const express = require('express');
 const router = express.Router();
 const SeasonalRecipe = require('../models/SeasonalRecipe');
@@ -22,6 +20,16 @@ router.get('/', async (req, res) => {
     res.status(200).json(recipes);
   } catch (error) {
     res.status(500).json({ error: error.message });
+  }
+});
+
+// Get featured seasonal recipes (limit to 3)
+router.get('/featured', async (req, res) => {
+  try {
+    const featuredRecipes = await SeasonalRecipe.find().limit(3); // Limit to 3 recipes
+    res.status(200).json(featuredRecipes);
+  } catch (error) {
+    res.status(500).json({ error: 'Error fetching featured seasonal recipes' });
   }
 });
 
