@@ -20,13 +20,13 @@ if (!user) {
 
   const [orders, setOrders] = useState([]);
   const [errorMessage, setErrorMessage] = useState('');
-
+  
   useEffect(() => {
     if (!user) {
       setErrorMessage('You need to log in to view your orders.');
       return;
     }
-
+  
     const ordersRef = ref(database, `orders/${user.uid}`);
     onValue(ordersRef, (snapshot) => {
       const data = snapshot.val();
@@ -40,7 +40,7 @@ if (!user) {
         setOrders([]);
       }
     });
-  }, [user, database]);
+  }, [user, database]);  
 
   const generatePDF = (order, action) => {
     if (!order.items || order.items.length === 0) {
