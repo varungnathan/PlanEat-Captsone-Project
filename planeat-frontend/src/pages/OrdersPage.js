@@ -1,5 +1,3 @@
-// planeat-frontend\src\pages\OrdersPage.js
-
 import React, { useState, useEffect } from 'react';
 import { getAuth } from 'firebase/auth';
 import { getDatabase, ref, onValue } from 'firebase/database';
@@ -11,36 +9,43 @@ function OrdersPage() {
   const auth = getAuth();
   const user = auth.currentUser;
 
-if (!user) {
-  setErrorMessage('You need to log in to view your orders.');
-  return;
-}
-
   const database = getDatabase();
 
   const [orders, setOrders] = useState([]);
   const [errorMessage, setErrorMessage] = useState('');
-  
+  const [isLoggedIn, setIsLoggedIn] = useState(!!user);
+
   useEffect(() => {
     if (!user) {
       setErrorMessage('You need to log in to view your orders.');
+      setIsLoggedIn(false);
       return;
     }
-  
+
+    setIsLoggedIn(true);
+
     const ordersRef = ref(database, `orders/${user.uid}`);
-    onValue(ordersRef, (snapshot) => {
-      const data = snapshot.val();
-      if (data) {
-        const ordersList = Object.keys(data).map((key) => ({
-          id: key,
-          ...data[key],
-        }));
-        setOrders(ordersList);
-      } else {
-        setOrders([]);
+    const unsubscribe = onValue(
+      ordersRef,
+      (snapshot) => {
+        const data = snapshot.val();
+        if (data) {
+          const ordersList = Object.keys(data).map((key) => ({
+            id: key,
+            ...data[key],
+          }));
+          setOrders(ordersList);
+        } else {
+          setOrders([]);
+        }
+      },
+      (error) => {
+        setErrorMessage('Failed to load orders.');
       }
-    });
-  }, [user, database]);  
+    );
+
+    return () => unsubscribe();
+  }, [user, database]);
 
   const generatePDF = (order, action) => {
     if (!order.items || order.items.length === 0) {
@@ -184,10 +189,6 @@ if (!user) {
       { maxWidth: 190 }
     );
 
-    if (additionalY + 90 > 290) {
-      doc.addPage();
-    }
-
     if (action === 'view') {
       window.open(doc.output('bloburl'), '_blank');
     } else {
@@ -195,7 +196,7 @@ if (!user) {
     }
   };
 
-  if (!user) {
+  if (!isLoggedIn) {
     return <div className="container mt-5">{errorMessage}</div>;
   }
 

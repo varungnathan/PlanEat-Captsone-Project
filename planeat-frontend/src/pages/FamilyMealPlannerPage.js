@@ -1,5 +1,3 @@
-// planeat-frontend\src\pages\FamilyMealPlannerPage.js
-
 import React, { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import { getDatabase, ref, push, set, onValue, update, remove } from 'firebase/database';
@@ -8,13 +6,6 @@ import { gapi } from 'gapi-script';
 
 function FamilyMealPlannerPage() {
   const auth = getAuth();
-  const user = auth.currentUser;
-
-  if (!user) {
-    alert('User not logged in. Please log in to continue.');
-    return null;
-  }
-
   const db = getDatabase();
   const [familyMembers, setFamilyMembers] = useState([]);
   const [mealPlans, setMealPlans] = useState([]);
@@ -33,6 +24,14 @@ function FamilyMealPlannerPage() {
 
   const GOOGLE_CLIENT_ID = '373521039643-1fssuvvur932q65orccqode8sh6l9hh9.apps.googleusercontent.com';
   const GOOGLE_API_KEY = 'AIzaSyDlmM1fPncleeUUEdOSsMT8nLTUNBh4DFU';
+
+  const user = auth.currentUser;
+
+  useEffect(() => {
+    if (!user) {
+      alert('User not logged in. Please log in to continue.');
+    }
+  }, [user]);
 
   useEffect(() => {
     gapi.load('client:auth2', () => {
@@ -74,45 +73,49 @@ function FamilyMealPlannerPage() {
   };
 
   const fetchMealPlans = useCallback(() => {
-    const membersRef = ref(db, `familyMealPlans/${user.uid}/members`);
-    onValue(membersRef, (snapshot) => {
-      const data = snapshot.val();
-      if (data) {
-        const allPlans = [];
-        Object.keys(data).forEach((memberId) => {
-          const member = data[memberId];
-          member.mealPlans &&
-            Object.keys(member.mealPlans).forEach((planId) => {
-              const plan = member.mealPlans[planId];
-              allPlans.push({
-                ...plan,
-                id: planId,
-                memberId,
-                memberName: member.name,
-                memberRelationship: member.relationship,
+    if (user?.uid) {
+      const membersRef = ref(db, `familyMealPlans/${user.uid}/members`);
+      onValue(membersRef, (snapshot) => {
+        const data = snapshot.val();
+        if (data) {
+          const allPlans = [];
+          Object.keys(data).forEach((memberId) => {
+            const member = data[memberId];
+            member.mealPlans &&
+              Object.keys(member.mealPlans).forEach((planId) => {
+                const plan = member.mealPlans[planId];
+                allPlans.push({
+                  ...plan,
+                  id: planId,
+                  memberId,
+                  memberName: member.name,
+                  memberRelationship: member.relationship,
+                });
               });
-            });
-        });
-        setMealPlans(allPlans);
-      } else {
-        setMealPlans([]);
-      }
-    });
-  }, [db, user.uid]);
+          });
+          setMealPlans(allPlans);
+        } else {
+          setMealPlans([]);
+        }
+      });
+    }
+  }, [db, user?.uid]);
 
   useEffect(() => {
-    const membersRef = ref(db, `familyMealPlans/${user.uid}/members`);
-    onValue(membersRef, (snapshot) => {
-      const data = snapshot.val();
-      if (data) {
-        const membersArray = Object.keys(data).map((key) => ({
-          id: key,
-          ...data[key],
-        }));
-        setFamilyMembers(membersArray);
-      }
-    });
-  }, [user.uid, db]);
+    if (user?.uid) {
+      const membersRef = ref(db, `familyMealPlans/${user.uid}/members`);
+      onValue(membersRef, (snapshot) => {
+        const data = snapshot.val();
+        if (data) {
+          const membersArray = Object.keys(data).map((key) => ({
+            id: key,
+            ...data[key],
+          }));
+          setFamilyMembers(membersArray);
+        }
+      });
+    }
+  }, [user?.uid, db]);
 
   useEffect(() => {
     fetchMealPlans();
@@ -137,7 +140,7 @@ function FamilyMealPlannerPage() {
       return;
     }
 
-    const membersRef = ref(db, `familyMealPlans/${user.uid}/members`);
+    const membersRef = ref(db, `familyMealPlans/${user?.uid}/members`);
     const newMemberRef = push(membersRef);
 
     set(newMemberRef, { name: newMemberName, relationship: newMemberRelationship, mealPlans: [] })
@@ -161,7 +164,7 @@ function FamilyMealPlannerPage() {
     if (editingPlanId) {
       const mealPlanRef = ref(
         db,
-        `familyMealPlans/${user.uid}/members/${selectedMember}/mealPlans/${editingPlanId}`
+        `familyMealPlans/${user?.uid}/members/${selectedMember}/mealPlans/${editingPlanId}`
       );
 
       update(mealPlanRef, {
@@ -180,7 +183,7 @@ function FamilyMealPlannerPage() {
     } else {
       const mealPlansRef = ref(
         db,
-        `familyMealPlans/${user.uid}/members/${selectedMember}/mealPlans`
+        `familyMealPlans/${user?.uid}/members/${selectedMember}/mealPlans`
       );
       const newMealPlanRef = push(mealPlansRef);
 
@@ -217,7 +220,7 @@ function FamilyMealPlannerPage() {
   };
 
   const deleteMealPlan = (planId, memberId) => {
-    const mealPlanRef = ref(db, `familyMealPlans/${user.uid}/members/${memberId}/mealPlans/${planId}`);
+    const mealPlanRef = ref(db, `familyMealPlans/${user?.uid}/members/${memberId}/mealPlans/${planId}`);
 
     remove(mealPlanRef)
       .then(() => {
@@ -233,6 +236,10 @@ function FamilyMealPlannerPage() {
   const filteredMealPlans = mealPlans.filter((plan) =>
     selectedViewer ? plan.memberId === selectedViewer : true
   );
+
+  if (!user) {
+    return null;
+  }
 
   return (
     <div className="container mt-5">
