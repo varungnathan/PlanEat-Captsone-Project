@@ -160,7 +160,7 @@ function Navbar({ isAuthenticated, handleLogout }) {
                   <>
                     <li>
                       <Link className="dropdown-item" to="/account">
-                        Account Management
+                        My Account
                       </Link>
                     </li>
                     <li>
