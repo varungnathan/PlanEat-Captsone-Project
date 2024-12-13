@@ -28,7 +28,7 @@ function HomePage() {
   useEffect(() => {
     const fetchSeasonalRecipes = async () => {
       try {
-        const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/seasonal-recipes`);
+        const response = await axios.get("https://planeat-backend.onrender.com/api/seasonal-recipes");
         setSeasonalRecipes(response.data);
       } catch (error) {
         console.error('Error fetching seasonal recipes:', error);
