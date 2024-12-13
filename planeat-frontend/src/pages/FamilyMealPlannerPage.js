@@ -9,6 +9,10 @@ import { gapi } from 'gapi-script';
 function FamilyMealPlannerPage() {
   const auth = getAuth();
   const user = auth.currentUser;
+if (!user) {
+  alert('User not logged in. Please log in to continue.');
+  return;
+}
 
   const db = getDatabase();
   const [familyMembers, setFamilyMembers] = useState([]);

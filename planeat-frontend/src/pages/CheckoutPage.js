@@ -12,7 +12,7 @@ function CheckoutPage() {
   const user = auth.currentUser;
   const navigate = useNavigate();
 
-  const [userId, setUserId] = useState(null);
+  const [userId, setUserId] = useState(user?.uid || null);
   const [cartItems, setCartItems] = useState([]);
   const [billingAddress, setBillingAddress] = useState({
     firstName: '',
@@ -43,36 +43,37 @@ function CheckoutPage() {
   const [totalPrice, setTotalPrice] = useState(0);
 
   useEffect(() => {
-    if (user) {
-      setUserId(user.uid);
+    if (!user) {
+        setErrorMessage('User not logged in.');
+        return;
+    }
 
-      const cartRef = ref(database, `carts/${user.uid}`);
-      onValue(cartRef, async (snapshot) => {
+    setUserId(user.uid);
+
+    const cartRef = ref(database, `carts/${user.uid}`);
+    onValue(cartRef, async (snapshot) => {
         const data = snapshot.val();
         if (data) {
-          const items = Object.keys(data).map((key) => ({
-            id: key,
-            ...data[key],
-          }));
+            const items = Object.keys(data).map((key) => ({
+                id: key,
+                ...data[key],
+            }));
 
-          const total = items.reduce(
-            (sum, item) => sum + item.price * item.quantity,
-            0
-          );
-          const calculatedTax = total * 0.13;
-          setCartItems(items);
-          setTax(calculatedTax.toFixed(2));
-          setTotalPrice((total + calculatedTax).toFixed(2));
+            const total = items.reduce(
+                (sum, item) => sum + item.price * item.quantity,
+                0
+            );
+            const calculatedTax = total * 0.13;
+            setCartItems(items);
+            setTax(calculatedTax.toFixed(2));
+            setTotalPrice((total + calculatedTax).toFixed(2));
         } else {
-          setCartItems([]);
-          setTax(0);
-          setTotalPrice(0);
+            setCartItems([]);
+            setTax(0);
+            setTotalPrice(0);
         }
-      });
-    } else {
-      setErrorMessage('User not logged in.');
-    }
-  }, [user, database]);
+    });
+}, [user, database]);
 
   const fetchProvinces = async () => {
     try {

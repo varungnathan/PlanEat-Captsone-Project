@@ -13,6 +13,11 @@ function StoreDetails() {
   const database = getDatabase();
   const user = auth.currentUser;
 
+if (!user) {
+  setLoginModal(true);
+}
+
+
   const [product, setProduct] = useState(null);
   const [recommendations, setRecommendations] = useState([]);
   const [quantity, setQuantity] = useState(1);

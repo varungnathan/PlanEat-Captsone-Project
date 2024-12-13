@@ -8,7 +8,11 @@ function MealPlannerPage() {
   const auth = getAuth();
   const user = auth.currentUser;
 
-  const [userId, setUserId] = useState(null);
+  const [userId, setUserId] = useState(user?.uid || null);
+
+if (!user) {
+  setErrorMessage('User is not logged in.');
+}
   const [mealPlans, setMealPlans] = useState([]);
   const [recipes, setRecipes] = useState([]);
   const [selectedDate, setSelectedDate] = useState('');

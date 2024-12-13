@@ -10,6 +10,12 @@ import logo from '../pagestyles/pdflogo.png';
 function OrdersPage() {
   const auth = getAuth();
   const user = auth.currentUser;
+
+if (!user) {
+  setErrorMessage('You need to log in to view your orders.');
+  return;
+}
+
   const database = getDatabase();
 
   const [orders, setOrders] = useState([]);
