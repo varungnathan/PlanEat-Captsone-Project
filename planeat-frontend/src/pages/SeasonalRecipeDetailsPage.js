@@ -51,6 +51,19 @@ function SeasonalRecipeDetailsPage() {
       </ol>
       <p><strong>Oil Usage:</strong> {recipe.oilUsage}</p>
       <p><strong>Fat Meter:</strong> {recipe.fatMeter}</p>
+
+      {recipe.substitutions && recipe.substitutions.length > 0 && (
+        <>
+          <h3>Ingredient Substitutions</h3>
+          <ul>
+            {recipe.substitutions.map((substitution, index) => (
+              <li key={index}>
+                <strong>{substitution.ingredient}</strong>: {substitution.alternatives.join(', ')}
+              </li>
+            ))}
+          </ul>
+        </>
+      )}
     </div>
   );
 }

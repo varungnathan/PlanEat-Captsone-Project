@@ -1,25 +1,46 @@
+// planeat-backend\updateSeasonalRecipes.js
+
 const mongoose = require('mongoose');
-const SeasonalRecipe = require('./models/SeasonalRecipe');
 const fs = require('fs');
+const path = require('path');
+const SeasonalRecipe = require('./models/SeasonalRecipe');
 require('dotenv').config();
 
-const DB_URI = process.env.MONGO_URI;
+const MONGO_URI = process.env.MONGO_URI;
 
-mongoose.connect(DB_URI, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-});
-
-const importData = async () => {
+const updateData = async () => {
   try {
-    const data = JSON.parse(fs.readFileSync('seasonalRecipes.json', 'utf-8')); // Path to your JSON file
-    await SeasonalRecipe.insertMany(data);
-    console.log('Seasonal recipes data imported successfully.');
-    mongoose.connection.close();
-  } catch (err) {
-    console.error('Error importing data:', err);
-    mongoose.connection.close();
+    const filePath = path.join(__dirname, 'seasonalRecipesWithSubstitutions.json');
+    const data = JSON.parse(fs.readFileSync(filePath, 'utf-8'));
+
+    for (const recipe of data) {
+      await SeasonalRecipe.findByIdAndUpdate(
+        recipe._id.$oid, // MongoDB ObjectID from JSON
+        { substitutions: recipe.substitutions }, // Only update the substitutions field
+        { new: true, upsert: false } // Update if found, do not create new
+      );
+    }
+
+    console.log('Substitutions updated successfully!');
+    process.exit();
+  } catch (error) {
+    console.error('Error updating substitutions:', error);
+    process.exit(1);
   }
 };
 
-importData();
+const start = async () => {
+  try {
+    await mongoose.connect(MONGO_URI, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    });
+    console.log('Connected to MongoDB');
+    await updateData();
+  } catch (error) {
+    console.error('Error connecting to MongoDB:', error);
+    process.exit(1);
+  }
+};
+
+start();

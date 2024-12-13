@@ -1,0 +1,296 @@
+[
+    {
+      "_id": { "$oid": "675b57479737dafbc4bdc5c0" },
+      "title": "Spring Pea Risotto",
+      "description": "A creamy risotto infused with fresh spring peas and mint for a vibrant seasonal delight.",
+      "imageUrl": "https://example.com/spring-pea-risotto.jpg",
+      "type": "Veg",
+      "tags": ["Spring", "Healthy", "Comfort Food"],
+      "estimatedTime": "40 minutes",
+      "nutritionalValues": {
+        "calories": 450,
+        "fats": 12,
+        "carbs": 70,
+        "proteins": 10
+      },
+      "history": "This dish is a celebration of spring produce, often served in Italian households during Easter.",
+      "specialty": "Rich in flavors of peas and mint, making it a unique spring offering.",
+      "preparationSteps": [
+        "Heat vegetable broth in a saucepan and keep warm.",
+        "In a large pan, sauté onions in olive oil until translucent.",
+        "Add Arborio rice and toast lightly.",
+        "Deglaze with white wine and gradually add warm broth, stirring constantly.",
+        "Stir in cooked peas, mint, and parmesan cheese.",
+        "Serve immediately, garnished with additional mint leaves."
+      ],
+      "oilUsage": "2 tablespoons olive oil",
+      "fatMeter": "Medium Fat",
+      "substitutions": [
+        {
+          "ingredient": "Arborio rice",
+          "alternatives": ["Quinoa", "Barley"],
+          "notes": "Use grains with a similar cooking time for best results."
+        },
+        {
+          "ingredient": "Parmesan cheese",
+          "alternatives": ["Pecorino Romano", "Nutritional Yeast"],
+          "notes": "Use nutritional yeast for a vegan alternative."
+        }
+      ],
+      "createdAt": { "$date": "2024-12-12T21:36:07.062Z" }
+    },
+    {
+      "_id": { "$oid": "675b57479737dafbc4bdc5c1" },
+      "title": "Asparagus and Lemon Tart",
+      "description": "A crisp and tangy tart featuring fresh asparagus and lemon for a perfect spring appetizer.",
+      "imageUrl": "https://example.com/asparagus-lemon-tart.jpg",
+      "type": "Veg",
+      "tags": ["Spring", "Quick", "Light"],
+      "estimatedTime": "30 minutes",
+      "nutritionalValues": {
+        "calories": 300,
+        "fats": 15,
+        "carbs": 25,
+        "proteins": 8
+      },
+      "history": "Popular in European springtime menus, this tart showcases the bounty of fresh asparagus.",
+      "specialty": "A crisp puff pastry base combined with tangy lemon and fresh asparagus.",
+      "preparationSteps": [
+        "Roll out puff pastry and place on a baking sheet.",
+        "Spread a thin layer of lemon-infused ricotta cheese.",
+        "Top with trimmed asparagus and bake until golden.",
+        "Drizzle with olive oil and sprinkle with fresh herbs before serving."
+      ],
+      "oilUsage": "1 tablespoon olive oil",
+      "fatMeter": "Medium Fat",
+      "substitutions": [
+        {
+          "ingredient": "Puff pastry",
+          "alternatives": ["Phyllo dough", "Whole wheat crust"],
+          "notes": "Phyllo dough provides a lighter, crispier texture."
+        },
+        {
+          "ingredient": "Ricotta cheese",
+          "alternatives": ["Cream cheese", "Cottage cheese"],
+          "notes": "Blend cottage cheese for a smoother texture."
+        }
+      ],
+      "createdAt": { "$date": "2024-12-12T21:36:07.065Z" }
+    },
+    {
+      "_id": { "$oid": "675b57479737dafbc4bdc5c2" },
+      "title": "Pumpkin Soup with Sage",
+      "description": "A creamy, spiced soup that embodies the cozy flavors of autumn.",
+      "imageUrl": "https://example.com/pumpkin-soup-sage.jpg",
+      "type": "Veg",
+      "tags": ["Autumn", "Comfort Food", "Healthy"],
+      "estimatedTime": "50 minutes",
+      "nutritionalValues": {
+        "calories": 250,
+        "fats": 8,
+        "carbs": 35,
+        "proteins": 6
+      },
+      "history": "Pumpkin soup has been a fall favorite for centuries, often made to celebrate the harvest season.",
+      "specialty": "Infused with sage and spices, this soup is a warm autumn delight.",
+      "preparationSteps": [
+        "Roast pumpkin cubes with olive oil and spices.",
+        "In a pot, sauté onions and garlic, then add roasted pumpkin.",
+        "Pour in vegetable stock and simmer until soft.",
+        "Blend the soup until smooth and stir in cream.",
+        "Serve garnished with fresh sage leaves."
+      ],
+      "oilUsage": "2 tablespoons olive oil",
+      "fatMeter": "Low Fat",
+      "substitutions": [
+        {
+          "ingredient": "Pumpkin",
+          "alternatives": ["Butternut squash", "Sweet potatoes"],
+          "notes": "Both alternatives provide a similar creamy texture."
+        },
+        {
+          "ingredient": "Cream",
+          "alternatives": ["Coconut milk", "Cashew cream"],
+          "notes": "Coconut milk adds a subtle sweetness."
+        }
+      ],
+      "createdAt": { "$date": "2024-12-12T21:36:07.067Z" }
+    },
+    {
+      "_id": { "$oid": "675b57479737dafbc4bdc5c3" },
+      "title": "Apple and Walnut Salad",
+      "description": "A refreshing autumn salad with crisp apples, toasted walnuts, and a tangy vinaigrette.",
+      "imageUrl": "https://example.com/apple-walnut-salad.jpg",
+      "type": "Veg",
+      "tags": ["Autumn", "Healthy", "Quick"],
+      "estimatedTime": "15 minutes",
+      "nutritionalValues": {
+        "calories": 200,
+        "fats": 10,
+        "carbs": 20,
+        "proteins": 4
+      },
+      "history": "This salad highlights the crisp apples and nuts often harvested in the fall.",
+      "specialty": "Combines sweet apples with the earthy crunch of walnuts.",
+      "preparationSteps": [
+        "Slice apples thinly and mix with baby greens.",
+        "Toast walnuts and sprinkle over the salad.",
+        "Whisk together olive oil, apple cider vinegar, and honey for a dressing.",
+        "Drizzle dressing over the salad and toss to combine."
+      ],
+      "oilUsage": "1 tablespoon olive oil",
+      "fatMeter": "Low Fat",
+      "substitutions": [
+        {
+          "ingredient": "Apples",
+          "alternatives": ["Pears", "Grapes"],
+          "notes": "Pears add a softer texture while grapes add a burst of sweetness."
+        },
+        {
+          "ingredient": "Walnuts",
+          "alternatives": ["Pecans", "Sunflower seeds"],
+          "notes": "Pecans bring a sweeter, buttery flavor."
+        }
+      ],
+      "createdAt": { "$date": "2024-12-12T21:36:07.068Z" }
+    },
+    {
+      "_id": { "$oid": "675b582d4e708d45b1640dbd" },
+      "title": "Pumpkin Spice Latte",
+      "description": "A warm and creamy latte infused with aromatic spices, perfect for autumn mornings.",
+      "imageUrl": "https://example.com/images/pumpkin-spice-latte.jpg",
+      "type": "Veg",
+      "tags": ["Autumn", "Comfort", "Quick"],
+      "estimatedTime": "10 minutes",
+      "nutritionalValues": {
+        "calories": 250,
+        "fats": 8,
+        "carbs": 38,
+        "proteins": 6
+      },
+      "history": "Originating from seasonal celebrations in North America, this latte became a cultural icon for fall.",
+      "specialty": "Known for its distinct pumpkin flavor and cozy aroma of cinnamon and nutmeg.",
+      "preparationSteps": [
+        "Brew strong coffee or espresso.",
+        "Mix pumpkin puree, sugar, and spices in a saucepan.",
+        "Stir in milk and whisk until frothy.",
+        "Combine coffee with the pumpkin mixture and top with whipped cream."
+      ],
+      "oilUsage": "None",
+      "fatMeter": "Low Fat",
+      "substitutions": [
+        {
+          "ingredient": "Pumpkin puree",
+          "alternatives": ["Sweet potato puree", "Carrot puree"],
+          "notes": "Carrot puree adds a slightly earthier flavor."
+        },
+        {
+          "ingredient": "Milk",
+          "alternatives": ["Almond milk", "Oat milk"],
+          "notes": "Oat milk creates a creamier texture."
+        }
+      ],
+      "createdAt": { "$date": "2024-12-12T21:39:57.557Z" }
+    },
+    {
+      "_id": { "$oid": "675b582d4e708d45b1640dbe" },
+      "title": "Winter Vegetable Soup",
+      "description": "A hearty soup made with root vegetables, perfect for cold winter nights.",
+      "imageUrl": "https://example.com/images/winter-vegetable-soup.jpg",
+      "type": "Veg",
+      "tags": ["Winter", "Healthy", "Comfort"],
+      "estimatedTime": "40 minutes",
+      "nutritionalValues": {
+        "calories": 150,
+        "fats": 4,
+        "carbs": 25,
+        "proteins": 5
+      },
+      "history": "Traditional winter recipe in European households to utilize stored root vegetables.",
+      "specialty": "Packed with vitamins and minerals, ideal for boosting immunity in winter.",
+      "preparationSteps": [
+        "Chop vegetables like carrots, potatoes, and parsnips.",
+        "Sauté onions and garlic in olive oil.",
+        "Add vegetables, broth, and herbs; simmer until tender.",
+        "Blend partially for a creamy texture."
+      ],
+      "oilUsage": "1 tablespoon olive oil",
+      "fatMeter": "Low Fat",
+      "substitutions": [
+        {
+          "ingredient": "Carrots",
+          "alternatives": ["Sweet potatoes", "Butternut squash"],
+          "notes": "Sweet potatoes provide a sweeter, heartier flavor."
+        },
+        {
+          "ingredient": "Parsnips",
+          "alternatives": ["Turnips", "Celery root"],
+          "notes": "Turnips add a slightly peppery taste."
+        }
+      ],
+      "createdAt": { "$date": "2024-12-12T21:39:57.559Z" }
+    },
+    {
+      "_id": { "$oid": "675b582d4e708d45b1640dbf" },
+      "title": "Summer Berry Tart",
+      "description": "A refreshing tart filled with summer berries and a creamy custard.",
+      "imageUrl": "https://example.com/images/summer-berry-tart.jpg",
+      "type": "Veg",
+      "tags": ["Summer", "Dessert", "Sweet"],
+      "estimatedTime": "1 hour",
+      "nutritionalValues": {
+        "calories": 300,
+        "fats": 12,
+        "carbs": 45,
+        "proteins": 4
+      },
+      "history": "Popular in French patisseries, this dessert celebrates the bounty of summer fruits.",
+      "specialty": "Vibrant and colorful with a mix of tangy and sweet flavors.",
+      "preparationSteps": [
+        "Prepare tart crust and bake until golden.",
+        "Make custard with milk, eggs, and sugar.",
+        "Fill tart shell with custard and top with fresh berries."
+      ],
+      "oilUsage": "Butter in crust",
+      "fatMeter": "Moderate",
+      "substitutions": [
+        {
+          "ingredient": "Berries",
+          "alternatives": ["Stone fruits", "Frozen berries"],
+          "notes": "Stone fruits like peaches provide a similar sweetness."
+        },
+        {
+          "ingredient": "Custard",
+          "alternatives": ["Whipped cream", "Greek yogurt"],
+          "notes": "Greek yogurt offers a tangy alternative."
+        }
+      ],
+      "createdAt": { "$date": "2024-12-12T21:39:57.561Z" }
+    },
+    {
+      "_id": { "$oid": "675b582d4e708d45b1640dc0" },
+      "title": "Spring Asparagus Risotto",
+      "description": "A creamy risotto featuring tender asparagus and fresh herbs.",
+      "imageUrl": "https://example.com/images/spring-asparagus-risotto.jpg",
+      "type": "Veg",
+      "tags": ["Spring", "Elegant", "Savory"],
+      "estimatedTime": "40 minutes",
+      "nutritionalValues": {
+        "calories": 400,
+        "fats": 12,
+        "carbs": 55,
+        "proteins": 10
+      },
+      "history": "Italian dish that showcases seasonal produce like asparagus.",
+      "specialty": "Rich and creamy texture with vibrant green asparagus.",
+      "preparationSteps": [
+        "Sauté onions in olive oil; add rice and toast lightly.",
+        "Gradually add warm broth while stirring.",
+        "Mix in blanched asparagus and grated Parmesan."
+      ],
+      "oilUsage": "2 tablespoons olive oil",
+      "fatMeter": "Moderate",
+      "createdAt": { "$date": "2024-12-12T21:39:57.562Z" }
+    }
+  ]
+  

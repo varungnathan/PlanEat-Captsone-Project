@@ -7,19 +7,26 @@ const SeasonalRecipeSchema = new mongoose.Schema({
   description: { type: String, required: true },
   imageUrl: { type: String, required: true },
   type: { type: String, enum: ['Veg', 'Non-Veg'], required: true },
-  tags: [{ type: String }], // E.g., ["Winter", "Healthy", "Quick"]
-  estimatedTime: { type: String }, // E.g., "30 minutes"
+  tags: [{ type: String }],
+  estimatedTime: { type: String },
   nutritionalValues: {
     calories: { type: Number },
     fats: { type: Number },
     carbs: { type: Number },
     proteins: { type: Number },
   },
-  history: { type: String }, // E.g., Traditional significance
-  specialty: { type: String }, // E.g., Unique to a region or occasion
-  preparationSteps: { type: [String] }, // Step-by-step instructions
-  oilUsage: { type: String }, // E.g., "2 tablespoons"
-  fatMeter: { type: String }, // E.g., "Low Fat", "High Fat"
+  history: { type: String },
+  specialty: { type: String },
+  preparationSteps: { type: [String] },
+  oilUsage: { type: String },
+  fatMeter: { type: String },
+  substitutions: [
+    {
+      ingredient: { type: String, required: true },
+      alternatives: [{ type: String, required: true }],
+      notes: { type: String },
+    },
+  ],
   createdAt: { type: Date, default: Date.now },
 });
 
