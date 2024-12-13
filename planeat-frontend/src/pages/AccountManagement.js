@@ -42,7 +42,7 @@ function AccountManagement() {
       }
 
       try {
-        const userDetailsResponse = await axios.get(`http://localhost:5000/api/users/details/${user.uid}`);
+        const userDetailsResponse = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/users/details/${user.uid}`);
         setFormData({
           name: userDetailsResponse.data.name,
           email: userDetailsResponse.data.email,
@@ -91,7 +91,7 @@ function AccountManagement() {
       if (!user) return;
 
       try {
-        const response = await axios.get(`http://localhost:5000/api/users/saved-recipes/${user.uid}`);
+        const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/users/saved-recipes/${user.uid}`);
         setSavedRecipes(response.data.savedRecipes);
       } catch (error) {
         setErrorMessage('Failed to load saved recipes.');
@@ -102,7 +102,7 @@ function AccountManagement() {
       if (!user) return;
 
       try {
-        const response = await axios.get(`http://localhost:5000/api/users/favorites/${user.uid}`);
+        const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/users/favorites/${user.uid}`);
         setFavoriteRecipes(response.data.favorites);
       } catch (error) {
         setErrorMessage('Failed to load favorite recipes.');
@@ -151,7 +151,7 @@ function AccountManagement() {
           setFormData((prev) => ({ ...prev, profileImageUrl: downloadURL }));
 
           try {
-            await axios.put(`http://localhost:5000/api/users/details/${user.uid}`, {
+            await axios.put(`${process.env.REACT_APP_BACKEND_URL}/api/users/details/${user.uid}`, {
               profileImageUrl: downloadURL,
             });
             setSuccessMessage('Profile image uploaded and updated successfully!');
@@ -173,7 +173,7 @@ function AccountManagement() {
     }
 
     try {
-      await axios.put(`http://localhost:5000/api/users/details/${user.uid}`, {
+      await axios.put(`${process.env.REACT_APP_BACKEND_URL}/api/users/details/${user.uid}`, {
         phone: formData.phone,
         address: formData.address,
       });

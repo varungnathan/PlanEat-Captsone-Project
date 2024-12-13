@@ -18,7 +18,7 @@ function PantryPage({ userId }) {
     const fetchPantryItems = async () => {
       if (!userId) return; // Ensure userId is available before making API call
       try {
-        const response = await axios.get(`http://localhost:5000/api/pantry/${userId}`);
+        const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/pantry/${userId}`);
         setPantryItems(response.data);
       } catch (error) {
         console.error('Error fetching pantry items:', error);
@@ -35,7 +35,7 @@ function PantryPage({ userId }) {
     }
 
     try {
-      const response = await axios.post(`http://localhost:5000/api/pantry/${userId}/add`, newItem);
+      const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/api/pantry/${userId}/add`, newItem);
       setPantryItems([...pantryItems, response.data.savedItem]);
       setNewItem({ name: '', quantity: 0, unit: '', expiryDate: '', category: '' });
     } catch (error) {
@@ -45,7 +45,7 @@ function PantryPage({ userId }) {
 
   const handleDeleteItem = async (id) => {
     try {
-      await axios.delete(`http://localhost:5000/api/pantry/${id}`);
+      await axios.delete(`${process.env.REACT_APP_BACKEND_URL}/api/pantry/${id}`);
       setPantryItems(pantryItems.filter((item) => item._id !== id));
     } catch (error) {
       console.error('Error deleting pantry item:', error);

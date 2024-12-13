@@ -23,11 +23,11 @@ function StoreDetails() {
   useEffect(() => {
     const fetchProduct = async () => {
       try {
-        const response = await fetch(`http://localhost:5000/api/products/${id}`);
+        const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/products/${id}`);
         const data = await response.json();
         setProduct(data);
 
-        const recResponse = await fetch('http://localhost:5000/api/products');
+        const recResponse = await fetch('${process.env.REACT_APP_BACKEND_URL}/api/products');
         const recData = await recResponse.json();
         setRecommendations(recData.filter((p) => p._id !== id).slice(0, 4));
       } catch (error) {

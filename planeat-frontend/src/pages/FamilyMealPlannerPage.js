@@ -122,7 +122,7 @@ function FamilyMealPlannerPage() {
   useEffect(() => {
     const fetchRecipes = async () => {
       try {
-        const response = await axios.get('http://localhost:5000/api/recipes');
+        const response = await axios.get('${process.env.REACT_APP_BACKEND_URL}/api/recipes');
         setRecipes(response.data);
       } catch (error) {
         setErrorMessage('Failed to fetch recipes.');

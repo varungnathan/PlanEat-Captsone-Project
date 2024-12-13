@@ -19,7 +19,7 @@ function RecipeListPage() {
           sort: sortType,
         };
 
-        const response = await axios.get('http://localhost:5000/api/recipes', {
+        const response = await axios.get('${process.env.REACT_APP_BACKEND_URL}/api/recipes', {
           params,
         });
         setRecipes(response.data);

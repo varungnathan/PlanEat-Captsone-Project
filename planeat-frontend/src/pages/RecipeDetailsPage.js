@@ -27,14 +27,14 @@ function RecipeDetailsPage() {
   useEffect(() => {
     const fetchRecipe = async () => {
       try {
-        const response = await axios.get(`http://localhost:5000/api/recipes/${id}`);
+        const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/recipes/${id}`);
         setRecipe(response.data);
         setReviews(response.data.reviews);
         setAverageRating(response.data.averageRating);
 
         if (user) {
           const favoritesResponse = await axios.get(
-            `http://localhost:5000/api/users/favorites/${user.uid}`
+            `${process.env.REACT_APP_BACKEND_URL}/api/users/favorites/${user.uid}`
           );
           const isFavorited = favoritesResponse.data.favorites.some(
             (favorite) => favorite._id === id
@@ -56,10 +56,10 @@ function RecipeDetailsPage() {
     }
     try {
       if (isFavorite) {
-        await axios.delete(`http://localhost:5000/api/users/favorites/${user.uid}/${id}`);
+        await axios.delete(`${process.env.REACT_APP_BACKEND_URL}/api/users/favorites/${user.uid}/${id}`);
         setIsFavorite(false);
       } else {
-        await axios.post(`http://localhost:5000/api/users/favorites/${user.uid}`, {
+        await axios.post(`${process.env.REACT_APP_BACKEND_URL}/api/users/favorites/${user.uid}`, {
           recipeId: id,
         });
         setIsFavorite(true);
@@ -80,7 +80,7 @@ function RecipeDetailsPage() {
         rating: userReview.rating,
         comment: userReview.comment,
       };
-      const response = await axios.post(`http://localhost:5000/api/recipes/${id}/reviews`, reviewData);
+      const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/api/recipes/${id}/reviews`, reviewData);
       setReviews(response.data.reviews);
       setUserReview({ rating: 0, comment: '' });
       setShowCommentBox(false);

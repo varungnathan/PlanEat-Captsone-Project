@@ -31,7 +31,7 @@ function AddPantryItemPage() {
     }
 
     try {
-      const response = await axios.post(`http://localhost:5000/api/pantry/${userId}/add`, formData);
+      const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/api/pantry/${userId}/add`, formData);
       setMessage(response.data.message || 'Item added successfully.');
       setFormData({
         name: '',

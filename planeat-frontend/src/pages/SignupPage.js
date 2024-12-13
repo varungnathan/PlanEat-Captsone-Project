@@ -31,7 +31,7 @@ function SignupPage() {
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       const firebaseUid = userCredential.user.uid;
 
-      await axios.post('http://localhost:5000/api/users/details', {
+      await axios.post('${process.env.REACT_APP_BACKEND_URL}/api/users/details', {
         name,
         email,
         firebaseUid,
