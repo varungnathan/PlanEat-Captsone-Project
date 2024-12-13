@@ -1,9 +1,8 @@
 // planeat-frontend\src\pages\LoginPage.js
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
 import { useNavigate, Link } from 'react-router-dom';
-import axios from 'axios';
 
 function LoginPage() {
   const [email, setEmail] = useState('');
@@ -13,7 +12,7 @@ function LoginPage() {
   const auth = getAuth();
 
   const validateEmail = (email) => {
-    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$/;
     return emailRegex.test(email);
   };
 

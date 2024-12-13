@@ -1,7 +1,7 @@
 // planeat-frontend\src\pages\RecipeDetailsPage.js
 
 import React, { useState, useEffect } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import { getAuth } from 'firebase/auth';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
