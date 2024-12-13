@@ -19,9 +19,27 @@ connectDB();
 
 const app = express();
 
-app.use(cors({ origin: 'http://localhost:3000' }));
+// Updated CORS configuration to allow multiple origins
+const allowedOrigins = [
+  'http://localhost:3000', // Local development
+  'https://675be0dd2eeea400085aeef1--planeat-capstone.netlify.app', // Netlify deployed frontend
+];
+
+const corsOptions = {
+  origin: (origin, callback) => {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  credentials: true, // Allow credentials (cookies, authorization headers, etc.)
+};
+
+app.use(cors(corsOptions));
 app.use(express.json());
 
+// API routes
 app.use('/api/users', userRoutes);
 app.use('/api/recipes', recipeRoutes);
 app.use('/api/products', productRoutes);
