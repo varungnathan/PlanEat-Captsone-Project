@@ -11,7 +11,7 @@ function SeasonalRecipesPage() {
   useEffect(() => {
     const fetchRecipes = async () => {
       try {
-        const response = await axios.get('${process.env.REACT_APP_BACKEND_URL}/api/seasonal-recipes');
+        const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/seasonal-recipes`);
         setRecipes(response.data);
       } catch (error) {
         console.error('Error fetching seasonal recipes:', error);

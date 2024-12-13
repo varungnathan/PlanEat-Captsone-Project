@@ -27,7 +27,7 @@ function StoreDetails() {
         const data = await response.json();
         setProduct(data);
 
-        const recResponse = await fetch('${process.env.REACT_APP_BACKEND_URL}/api/products');
+        const recResponse = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/products`);
         const recData = await recResponse.json();
         setRecommendations(recData.filter((p) => p._id !== id).slice(0, 4));
       } catch (error) {

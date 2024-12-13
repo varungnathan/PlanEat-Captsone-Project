@@ -43,7 +43,7 @@ function MealPlannerPage() {
 
   const fetchRecipes = useCallback(async () => {
     try {
-      const response = await axios.get('${process.env.REACT_APP_BACKEND_URL}/api/recipes');
+      const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/recipes`);
       setRecipes(response.data);
     } catch (error) {
       console.error('Error fetching recipes:', error);
@@ -70,7 +70,7 @@ function MealPlannerPage() {
     }
 
     try {
-      await axios.post('${process.env.REACT_APP_BACKEND_URL}/api/meal-plans', {
+      await axios.post(`${process.env.REACT_APP_BACKEND_URL}/api/meal-plans`, {
         userId,
         date: new Date(selectedDate).toISOString(), // Ensure the date is saved in UTC
         meals: [{ time: selectedMeal, recipe: selectedRecipe }],

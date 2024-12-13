@@ -28,7 +28,7 @@ function HomePage() {
   useEffect(() => {
     const fetchSeasonalRecipes = async () => {
       try {
-        const response = await axios.get('${process.env.REACT_APP_BACKEND_URL}/api/seasonal-recipes');
+        const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/seasonal-recipes`);
         setSeasonalRecipes(response.data);
       } catch (error) {
         console.error('Error fetching seasonal recipes:', error);
@@ -37,7 +37,7 @@ function HomePage() {
 
     const fetchProducts = async () => {
       try {
-        const response = await axios.get('${process.env.REACT_APP_BACKEND_URL}/api/products');
+        const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/products`);
         setProducts(response.data.slice(0, 3)); // Show the first 3 products
       } catch (error) {
         console.error('Error fetching products:', error);

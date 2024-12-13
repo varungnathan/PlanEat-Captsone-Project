@@ -23,7 +23,7 @@ function SeasonalRecipeDetailsPage() {
 
     const fetchRecommendedProducts = async () => {
       try {
-        const response = await axios.get('${process.env.REACT_APP_BACKEND_URL}/api/products'); // Assuming all products are fetched
+        const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/products`); // Assuming all products are fetched
         const products = response.data;
 
         if (products.length > 0) {

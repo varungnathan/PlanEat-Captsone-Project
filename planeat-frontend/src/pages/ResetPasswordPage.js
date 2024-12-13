@@ -14,7 +14,7 @@ function ResetPasswordPage() {
     e.preventDefault();
 
     try {
-      const response = await axios.post('${process.env.REACT_APP_BACKEND_URL}/api/users/reset-password', { email });
+      const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/api/users/reset-password`, { email });
       const resetLink = response.data.resetLink;
 
       window.open(resetLink, '_blank');

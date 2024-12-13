@@ -19,9 +19,9 @@ function RecipeListPage() {
           sort: sortType,
         };
 
-        const response = await axios.get('${process.env.REACT_APP_BACKEND_URL}/api/recipes', {
+        const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/recipes`, {
           params,
-        });
+        });        
         setRecipes(response.data);
       } catch (error) {
         console.error('Error fetching recipes:', error);
