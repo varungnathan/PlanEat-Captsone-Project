@@ -14,23 +14,29 @@ const pantryRoutes = require('./routes/pantryRoutes');
 const cors = require('cors');
 
 dotenv.config();
-
 connectDB();
 
 const app = express();
 
-// Updated CORS configuration to allow all origins temporarily for debugging
-const corsOptions = {
-  origin: [
-    'http://localhost:3000', // Local development
-    'https://675be94224ce22000877c9a6--planeat-capstone.netlify.app', // Deployed frontend on Netlify
-  ],
-  methods: ['GET', 'POST', 'PUT', 'DELETE'], // Specify allowed methods
-  allowedHeaders: ['Content-Type', 'Authorization'], // Specify allowed headers
-  credentials: true, // Allow cookies and other credentials
-};
+// CORS Configuration
+const allowedOrigins = [
+  'http://localhost:3000', // Local development
+  'https://675bede86d6637000868d851--planeat-capstone.netlify.app', // Deployed Netlify URL
+];
 
-app.use(cors(corsOptions)); // Enable CORS with specified options
+app.use(
+  cors({
+    origin: (origin, callback) => {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error('Not allowed by CORS'));
+      }
+    },
+    credentials: true, // Allows cookies or other credentials
+  })
+);
+
 app.use(express.json());
 
 // API routes
