@@ -19,25 +19,18 @@ connectDB();
 
 const app = express();
 
-// Updated CORS configuration to allow multiple origins
-const allowedOrigins = [
-  'http://localhost:3000', // Local development
-  'https://675be0dd2eeea400085aeef1--planeat-capstone.netlify.app', // Netlify deployed frontend
-];
-
+// Updated CORS configuration to allow all origins temporarily for debugging
 const corsOptions = {
-  origin: (origin, callback) => {
-    if (!origin || allowedOrigins.includes(origin)) {
-      callback(null, true);
-    } else {
-      callback(new Error(`CORS policy does not allow access from origin ${origin}`));
-    }
-  },
-  methods: ['GET', 'POST', 'PUT', 'DELETE'], // Allowed HTTP methods
-  credentials: true, // Allow credentials (cookies, authorization headers, etc.)
+  origin: [
+    'http://localhost:3000', // Local development
+    'https://675be94224ce22000877c9a6--planeat-capstone.netlify.app', // Deployed frontend on Netlify
+  ],
+  methods: ['GET', 'POST', 'PUT', 'DELETE'], // Specify allowed methods
+  allowedHeaders: ['Content-Type', 'Authorization'], // Specify allowed headers
+  credentials: true, // Allow cookies and other credentials
 };
 
-app.use(cors(corsOptions));
+app.use(cors(corsOptions)); // Enable CORS with specified options
 app.use(express.json());
 
 // API routes
