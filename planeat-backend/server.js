@@ -30,9 +30,10 @@ const corsOptions = {
     if (!origin || allowedOrigins.includes(origin)) {
       callback(null, true);
     } else {
-      callback(new Error('Not allowed by CORS'));
+      callback(new Error(`CORS policy does not allow access from origin ${origin}`));
     }
   },
+  methods: ['GET', 'POST', 'PUT', 'DELETE'], // Allowed HTTP methods
   credentials: true, // Allow credentials (cookies, authorization headers, etc.)
 };
 
