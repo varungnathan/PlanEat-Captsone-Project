@@ -61,9 +61,6 @@ function LoginPage() {
             {error && <p className="text-danger mt-3">{error}</p>}
           </form>
           <p className="text-center mt-4">
-            Forgot your password? <Link to="/reset-password">Reset it</Link>
-          </p>
-          <p className="text-center mt-4">
             Not a user? <Link to="/signup">Sign up</Link>
           </p>
         </div>
