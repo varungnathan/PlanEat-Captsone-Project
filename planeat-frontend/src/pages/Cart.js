@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { getAuth } from 'firebase/auth';
-import { getDatabase, ref, onValue, set, update, remove } from 'firebase/database';
+import { getDatabase, ref, onValue, update, remove } from 'firebase/database';
 import { useNavigate } from 'react-router-dom';
 
 function Cart() {
