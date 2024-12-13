@@ -131,7 +131,7 @@ function StoreDetails() {
                   color: product.type === 'Veg' ? '#228B22' : '#D32F2F',
                 }}
               >
-                {product.type === 'Veg' ? 'eco' : 'square_dot'}
+                {product.type === 'Veg' ? 'eco' : ''}
               </span>
               {product.type}
             </span>
