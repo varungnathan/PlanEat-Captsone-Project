@@ -13,11 +13,6 @@ function StoreDetails() {
   const database = getDatabase();
   const user = auth.currentUser;
 
-if (!user) {
-  setLoginModal(true);
-}
-
-
   const [product, setProduct] = useState(null);
   const [recommendations, setRecommendations] = useState([]);
   const [quantity, setQuantity] = useState(1);
@@ -26,9 +21,17 @@ if (!user) {
   const [shippingMessage, setShippingMessage] = useState('');
 
   useEffect(() => {
+    if (!user) {
+      setLoginModal(true);
+    }
+  }, [user]);
+
+  useEffect(() => {
     const fetchProduct = async () => {
       try {
-        const response = await fetch(`${process.env.REACT_APP_BACKEND_URL}/api/products/${id}`);
+        const response = await fetch(
+          `${process.env.REACT_APP_BACKEND_URL}/api/products/${id}`
+        );
         const data = await response.json();
         setProduct(data);
 
@@ -246,7 +249,10 @@ if (!user) {
                 <p>You need to log in to add items to your cart.</p>
               </div>
               <div className="modal-footer">
-                <button className="btn btn-secondary" onClick={() => setLoginModal(false)}>
+                <button
+                  className="btn btn-secondary"
+                  onClick={() => setLoginModal(false)}
+                >
                   Cancel
                 </button>
                 <button className="btn btn-primary" onClick={handleLoginRedirect}>

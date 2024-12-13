@@ -8,23 +8,21 @@ function MealPlannerPage() {
   const auth = getAuth();
   const user = auth.currentUser;
 
+  const [errorMessage, setErrorMessage] = useState('');
   const [userId, setUserId] = useState(user?.uid || null);
-
-if (!user) {
-  setErrorMessage('User is not logged in.');
-}
   const [mealPlans, setMealPlans] = useState([]);
   const [recipes, setRecipes] = useState([]);
   const [selectedDate, setSelectedDate] = useState('');
   const [selectedMeal, setSelectedMeal] = useState('Breakfast');
   const [selectedRecipe, setSelectedRecipe] = useState('');
-  const [errorMessage, setErrorMessage] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
 
   const fetchUserId = useCallback(async () => {
     if (user) {
       try {
-        const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/users/firebase/${user.uid}`);
+        const response = await axios.get(
+          `${process.env.REACT_APP_BACKEND_URL}/api/users/firebase/${user.uid}`
+        );
         setUserId(response.data._id);
       } catch (error) {
         setErrorMessage('Failed to load user ID.');
@@ -34,10 +32,12 @@ if (!user) {
 
   const fetchMealPlans = useCallback(async () => {
     try {
-      const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/meal-plans/${userId}`);
+      const response = await axios.get(
+        `${process.env.REACT_APP_BACKEND_URL}/api/meal-plans/${userId}`
+      );
       const plansWithAdjustedDates = response.data.map((plan) => ({
         ...plan,
-        date: new Date(plan.date).toISOString().split('T')[0], // Convert to local ISO format (YYYY-MM-DD)
+        date: new Date(plan.date).toISOString().split('T')[0],
       }));
       setMealPlans(plansWithAdjustedDates);
     } catch (error) {
@@ -47,10 +47,12 @@ if (!user) {
 
   const fetchRecipes = useCallback(async () => {
     try {
-      const response = await axios.get(`${process.env.REACT_APP_BACKEND_URL}/api/recipes`);
+      const response = await axios.get(
+        `${process.env.REACT_APP_BACKEND_URL}/api/recipes`
+      );
       setRecipes(response.data);
     } catch (error) {
-      console.error('Error fetching recipes:', error);
+      setErrorMessage('Failed to load recipes.');
     }
   }, []);
 
@@ -76,7 +78,7 @@ if (!user) {
     try {
       await axios.post(`${process.env.REACT_APP_BACKEND_URL}/api/meal-plans`, {
         userId,
-        date: new Date(selectedDate).toISOString(), // Ensure the date is saved in UTC
+        date: new Date(selectedDate).toISOString(),
         meals: [{ time: selectedMeal, recipe: selectedRecipe }],
       });
 
@@ -89,7 +91,9 @@ if (!user) {
 
   const handleDeleteMealPlan = async (id) => {
     try {
-      await axios.delete(`${process.env.REACT_APP_BACKEND_URL}/api/meal-plans/${id}`);
+      await axios.delete(
+        `${process.env.REACT_APP_BACKEND_URL}/api/meal-plans/${id}`
+      );
       setSuccessMessage('Meal plan deleted successfully!');
       fetchMealPlans();
     } catch (error) {
@@ -163,7 +167,7 @@ if (!user) {
                 <tr key={`${plan._id}-${index}`}>
                   <td>{plan.date}</td>
                   <td>{meal.time}</td>
-                  <td>{meal.recipe.title}</td>
+                  <td>{meal.recipe.title || 'Unknown Recipe'}</td>
                   <td>
                     <button
                       className="btn btn-danger btn-sm"
